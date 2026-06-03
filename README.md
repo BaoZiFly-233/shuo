@@ -9,7 +9,7 @@ On-device speech recognition GUI powered by Qwen3-ASR-0.6B ONNX CPU pipeline. No
 ```
 ├── docs/                       # Documentation
 ├── locales/                    # Translation files
-├── Qwen3-ASR-0.6B-ONNX-CPU/   # ASR model (download first)
+├── Qwen3-ASR-0.6B-ONNX-CPU/    # ASR model (download first)
 ├── asr_gui.py                  # Speech recognition GUI
 ├── benchmark.py                # Performance benchmark
 ├── extract_i18n.py             # Extract translation keys from source
