@@ -6,7 +6,8 @@
 - **i18n 翻译不完整**：清理 locales 中 12 个未使用的过期 key；切换语言时遗漏刷新历史记录、清空、关于、退出等控件，已补全
 
 ### 优化
-- **去掉对 npy 文件的 git 跟踪**：`Qwen3-ASR-0.6B-ONNX-CPU/` 目录整体 gitignore，`mel_filters.npy` 改为外部下载，不再入库
+- **onnx_inference.py 移至根目录**：不再放在 `Qwen3-ASR-0.6B-ONNX-CPU/` 下载目录内，避免被覆盖；模型目录完全 gitignore
+- **根目录恢复 mel_filters.npy**：下载目录中的 npy 含 pickle 数据导致加载失败，改用根目录自带的纯净版本，无需 `allow_pickle`
 
 ## 0.1.7 — 2026-06-03
 
