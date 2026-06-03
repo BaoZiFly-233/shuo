@@ -919,7 +919,7 @@ class MainWindow(QMainWindow):
     def load_history(self):
         """加载历史记录（最新的在最上面）"""
         items = History.load()
-        for item in reversed(items):
+        for item in items:
             text = item.get("text", "")
             if text:
                 widget = ResultItem(text)
