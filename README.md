@@ -9,11 +9,13 @@ On-device speech recognition GUI powered by Qwen3-ASR-0.6B ONNX CPU pipeline. No
 ```
 ├── docs/                  # Documentation
 ├── locales/              # Translation files
+├── onnx_inference.py       # ASR inference pipeline
 ├── Qwen3-ASR-0.6B-ONNX-CPU/   # ASR model (download first)
 ├── asr_gui.py            # Speech recognition GUI
 ├── benchmark.py           # Performance benchmark
 ├── extract_i18n.py       # Extract translation keys from source
-└── i18n.py               # Internationalization module
+├── i18n.py               # Internationalization module
+└── mel_filters.npy       # Precomputed Mel filterbank
 ```
 
 ## Quick Start

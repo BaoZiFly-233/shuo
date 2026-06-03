@@ -7,11 +7,13 @@
 ```
 ├── docs/                  # 文档
 ├── locales/              # 翻译文件
+├── onnx_inference.py       # ASR 推理管线
 ├── Qwen3-ASR-0.6B-ONNX-CPU/   # ASR 模型（需先下载）
 ├── asr_gui.py            # 语音识别 GUI
 ├── benchmark.py           # 性能测试
 ├── extract_i18n.py       # 提取翻译键
-└── i18n.py               # 国际化模块
+├── i18n.py               # 国际化模块
+└── mel_filters.npy       # 预计算 Mel 滤波器
 ```
 
 ## 下载模型
