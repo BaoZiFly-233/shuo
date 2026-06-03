@@ -1,4 +1,5 @@
 Qwen3-ASR-0.6B-ONNX-CPU/*
+!Qwen3-ASR-0.6B-ONNX-CPU/onnx_inference.py
 **/__pycache__/
 *.pyc
 config.json
