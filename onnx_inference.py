@@ -116,7 +116,7 @@ def compute_mel_spectrogram(wav: np.ndarray, mel_filters: np.ndarray) -> np.ndar
 def get_mel_filters() -> np.ndarray:
     """Load precomputed mel filterbank (generated once from librosa)."""
     from pathlib import Path
-    npy_path = Path(__file__).parent / "mel_filters.npy"
+    npy_path = Path(__file__).parent / "Qwen3-ASR-0.6B-ONNX-CPU" / "mel_filters.npy"
     if npy_path.exists():
         return np.load(npy_path).astype(np.float32)
     # Fallback: compute with librosa (first run only)

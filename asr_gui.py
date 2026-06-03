@@ -107,7 +107,6 @@ logger.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 
 model_root = Path(__file__).parent / "Qwen3-ASR-0.6B-ONNX-CPU"
-sys.path.insert(0, str(model_root))
 from onnx_inference import OnnxAsrPipeline
 
 SAMPLE_RATE = 16000

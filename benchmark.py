@@ -12,7 +12,6 @@ import time, sys, shutil
 from pathlib import Path
 
 model_root = Path(__file__).parent / "Qwen3-ASR-0.6B-ONNX-CPU"
-sys.path.insert(0, str(model_root))
 from onnx_inference import OnnxAsrPipeline, load_audio
 
 AUDIO = Path(__file__).parent / "assets" / "recording_test.wav"
