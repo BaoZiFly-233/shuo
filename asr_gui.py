@@ -148,7 +148,7 @@ ASR_LANGUAGES = [
 
 DEFAULT_CONFIG = {
     "hotkey": "f2",
-    "language": "zh_CN",
+    "language": "en",
     "asr_lang": "auto",
     "auto_type": True,
     "save_history": False
@@ -739,8 +739,9 @@ class MainWindow(QMainWindow):
         self.lang_btn.setFlat(True)
         self.lang_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self._lang_menu = QMenu(self)
-        self._lang_menu.addAction(i18n.tr("lang.zh"), lambda: self._switch_lang("zh_CN"))
-        self._lang_menu.addAction(i18n.tr("lang.en"), lambda: self._switch_lang("en"))
+        for code, key in ASR_LANGUAGES:
+            if code != "auto":
+                self._lang_menu.addAction(i18n.tr(key), lambda c=code: self._switch_lang(c))
         self.lang_btn.setMenu(self._lang_menu)
         self._update_lang_label()
         toolbar.addWidget(self.lang_btn)
@@ -839,10 +840,11 @@ class MainWindow(QMainWindow):
         self.loader.start()
 
         # 加载语言
-        i18n.load(self.config.get("language", "zh_CN"))
+        i18n.load(self.config.get("language", "en"))
         self._lang_menu.clear()
-        self._lang_menu.addAction(i18n.tr("lang.zh"), lambda: self._switch_lang("zh_CN"))
-        self._lang_menu.addAction(i18n.tr("lang.en"), lambda: self._switch_lang("en"))
+        for code, key in ASR_LANGUAGES:
+            if code != "auto":
+                self._lang_menu.addAction(i18n.tr(key), lambda c=code: self._switch_lang(c))
         self._update_lang_label()
 
         self.overlay = LoadingOverlay(cw)
@@ -1033,8 +1035,9 @@ class MainWindow(QMainWindow):
         Config.save(self.config)
         i18n.load(lang)
         self._lang_menu.clear()
-        self._lang_menu.addAction(i18n.tr("lang.zh"), lambda: self._switch_lang("zh_CN"))
-        self._lang_menu.addAction(i18n.tr("lang.en"), lambda: self._switch_lang("en"))
+        for code, key in ASR_LANGUAGES:
+            if code != "auto":
+                self._lang_menu.addAction(i18n.tr(key), lambda c=code: self._switch_lang(c))
         self.setWindowTitle(i18n.tr("app.title"))
         self.settings_btn.setText(f"  {i18n.tr('btn.settings')}")
         self.auto_type_cb.setText(i18n.tr("settings.auto_type"))
@@ -1053,8 +1056,8 @@ class MainWindow(QMainWindow):
         self.update_hint()
 
     def _update_lang_label(self):
-        lang = self.config.get("language", "zh_CN")
-        code = "ZH" if lang == "zh_CN" else "EN"
+        lang = self.config.get("language", "en")
+        code = i18n._COMPAT.get(lang, lang).upper()
         self.lang_btn.setIcon(_icon("fa5s.language"))
         self.lang_btn.setText(f"  {code}")
 
@@ -1183,7 +1186,7 @@ if __name__ == "__main__":
         app.setFont(font)
 
         app.setWindowIcon(_icon("fa5s.microphone"))
-        i18n.load("zh_CN")  # 构造 UI 前必须加载，MainWindow 内会按用户配置重新加载
+        i18n.load("en")  # 构造 UI 前必须加载，MainWindow 内会按用户配置重新加载
         logger.info("应用启动")
         w = MainWindow()
         w.show()
