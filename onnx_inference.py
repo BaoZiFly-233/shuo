@@ -118,7 +118,7 @@ def get_mel_filters() -> np.ndarray:
     from pathlib import Path
     npy_path = Path(__file__).parent / "Qwen3-ASR-0.6B-ONNX-CPU" / "mel_filters.npy"
     if npy_path.exists():
-        return np.load(npy_path).astype(np.float32)
+        return np.load(npy_path, allow_pickle=True).astype(np.float32)
     # Fallback: compute with librosa (first run only)
     import librosa
     mel = librosa.filters.mel(
