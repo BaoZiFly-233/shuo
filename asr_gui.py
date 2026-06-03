@@ -115,9 +115,41 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 DEBOUNCE_MS = 300
 
+ASR_LANGUAGES = [
+    ("auto", "asr_lang.auto"),
+    ("zh", "asr_lang.zh"),
+    ("yue", "asr_lang.yue"),
+    ("en", "asr_lang.en"),
+    ("ja", "asr_lang.ja"),
+    ("de", "asr_lang.de"),
+    ("ko", "asr_lang.ko"),
+    ("ru", "asr_lang.ru"),
+    ("fr", "asr_lang.fr"),
+    ("pt", "asr_lang.pt"),
+    ("ar", "asr_lang.ar"),
+    ("it", "asr_lang.it"),
+    ("es", "asr_lang.es"),
+    ("hi", "asr_lang.hi"),
+    ("id", "asr_lang.id"),
+    ("th", "asr_lang.th"),
+    ("tr", "asr_lang.tr"),
+    ("uk", "asr_lang.uk"),
+    ("vi", "asr_lang.vi"),
+    ("cs", "asr_lang.cs"),
+    ("da", "asr_lang.da"),
+    ("fil", "asr_lang.fil"),
+    ("fi", "asr_lang.fi"),
+    ("is", "asr_lang.is"),
+    ("ms", "asr_lang.ms"),
+    ("no", "asr_lang.no"),
+    ("pl", "asr_lang.pl"),
+    ("sv", "asr_lang.sv"),
+]
+
 DEFAULT_CONFIG = {
     "hotkey": "f2",
     "language": "zh_CN",
+    "asr_lang": "auto",
     "auto_type": True,
     "save_history": False
 }
@@ -247,15 +279,19 @@ class InferWorker(QThread):
     done = Signal(str)
     error = Signal(str)
 
-    def __init__(self, pipeline, audio_path):
+    def __init__(self, pipeline, audio_path, asr_lang=None):
         super().__init__()
         self.pipeline = pipeline
         self.audio_path = audio_path
+        self.asr_lang = asr_lang
 
     def run(self):
         try:
             logger.info("开始识别...")
-            result = self.pipeline.transcribe(self.audio_path)
+            kwargs = {}
+            if self.asr_lang and self.asr_lang != "auto":
+                kwargs["language"] = self.asr_lang
+            result = self.pipeline.transcribe(self.audio_path, **kwargs)
             logger.info("识别完成")
             self.done.emit(result["text"])
         except Exception as e:
@@ -688,6 +724,17 @@ class MainWindow(QMainWindow):
         self.clear_btn.clicked.connect(self.clear_history)
         toolbar.addWidget(self.clear_btn)
 
+        self.asr_lang_box = QComboBox()
+        self.asr_lang_box.setFixedWidth(120)
+        self._populate_asr_lang()
+        current_asr = self.config.get("asr_lang", "auto")
+        for i, (code, _) in enumerate(ASR_LANGUAGES):
+            if code == current_asr:
+                self.asr_lang_box.setCurrentIndex(i)
+                break
+        self.asr_lang_box.currentIndexChanged.connect(self._on_asr_lang_changed)
+        toolbar.addWidget(self.asr_lang_box)
+
         self.lang_btn = QPushButton()
         self.lang_btn.setFlat(True)
         self.lang_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -941,6 +988,16 @@ class MainWindow(QMainWindow):
         gh.start(on_down=self.hotkey_pressed.emit, on_up=self.hotkey_released.emit)
         self.update_hint()
 
+    def _populate_asr_lang(self):
+        self.asr_lang_box.clear()
+        for code, key in ASR_LANGUAGES:
+            self.asr_lang_box.addItem(i18n.tr(key), code)
+
+    def _on_asr_lang_changed(self, idx):
+        code = self.asr_lang_box.itemData(idx)
+        self.config["asr_lang"] = code
+        Config.save(self.config)
+
     def update_hint(self):
         hk = gh.get()
         self.hint.setText(i18n.tr("hint.hold").format(key=hk))
@@ -986,6 +1043,12 @@ class MainWindow(QMainWindow):
         self.clear_btn.setToolTip(i18n.tr("btn.clear_history"))
         self.about_btn.setText(f"  {i18n.tr('btn.about')}")
         self.exit_btn.setText(f"  {i18n.tr('tray.quit')}")
+        self._populate_asr_lang()
+        current_asr = self.config.get("asr_lang", "auto")
+        for i in range(self.asr_lang_box.count()):
+            if self.asr_lang_box.itemData(i) == current_asr:
+                self.asr_lang_box.setCurrentIndex(i)
+                break
         self._update_lang_label()
         self.update_hint()
 
@@ -1052,7 +1115,7 @@ class MainWindow(QMainWindow):
             except Exception: pass
             self.worker.deleteLater()
         self._temp_wav = path  # 记下来等识别完删掉
-        self.worker = InferWorker(self.pipeline, path)
+        self.worker = InferWorker(self.pipeline, path, self.config.get("asr_lang", "auto"))
         self.worker.done.connect(self.on_result)
         self.worker.error.connect(self.on_error)
         self.worker.start()

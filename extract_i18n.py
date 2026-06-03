@@ -4,7 +4,18 @@ from pathlib import Path
 locale_dir = Path(__file__).parent / "locales"
 scan_dirs = [Path(__file__).parent]
 
-keys = set()
+# Dynamic keys referenced via variables at runtime
+DYNAMIC_KEYS = {
+    "asr_lang.auto", "asr_lang.zh", "asr_lang.yue", "asr_lang.en",
+    "asr_lang.ja", "asr_lang.de", "asr_lang.ko", "asr_lang.ru",
+    "asr_lang.fr", "asr_lang.pt", "asr_lang.ar", "asr_lang.it",
+    "asr_lang.es", "asr_lang.hi", "asr_lang.id", "asr_lang.th",
+    "asr_lang.tr", "asr_lang.uk", "asr_lang.vi", "asr_lang.cs",
+    "asr_lang.da", "asr_lang.fil", "asr_lang.fi", "asr_lang.is",
+    "asr_lang.ms", "asr_lang.no", "asr_lang.pl", "asr_lang.sv",
+}
+
+keys = set(DYNAMIC_KEYS)
 for sd in scan_dirs:
     for py in sd.rglob("*.py"):
         if "locales" in py.parts:
