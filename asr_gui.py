@@ -1080,7 +1080,17 @@ class MainWindow(QMainWindow):
         if self.debounce.isActive():
             self.debounce.stop()
             return
-        # 如果旧线程还在跑，强制停掉
+        # 识别中不允许录音
+        if self.worker and self.worker.isRunning():
+            return
+        if self.worker:
+            try: self.worker.done.disconnect()
+            except Exception: pass
+            try: self.worker.error.disconnect()
+            except Exception: pass
+            self.worker.deleteLater()
+            self.worker = None
+        # 如果旧录音线程还在跑，强制停掉
         if self.recorder and self.recorder.isRunning():
             self.recorder.stop()
             self.recorder.wait(1000)
