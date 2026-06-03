@@ -668,6 +668,7 @@ class MainWindow(QMainWindow):
         self._temp_wav = None
         self._pending_wavs = []
         self.config = Config.load()
+        i18n.load(self.config.get("language", "en"))
         self.debounce = QTimer()
         self.debounce.setSingleShot(True)
         self.debounce.timeout.connect(self.on_debounce_end)
@@ -847,8 +848,6 @@ class MainWindow(QMainWindow):
         self.loader.error.connect(self.on_load_error)
         self.loader.start()
 
-        # 加载语言
-        i18n.load(self.config.get("language", "en"))
         self._lang_menu.clear()
         for code, key in ASR_LANGUAGES:
             if code != "auto":
@@ -878,9 +877,9 @@ class MainWindow(QMainWindow):
         self.tray.setIcon(_icon("fa5s.microphone"))
         self.tray.setToolTip(i18n.tr("app.title"))
         menu = QMenu()
-        quit_action = QAction(i18n.tr("tray.quit"), self)
-        quit_action.triggered.connect(self.quit_app)
-        menu.addAction(quit_action)
+        self.quit_action = QAction(i18n.tr("tray.quit"), self)
+        self.quit_action.triggered.connect(self.quit_app)
+        menu.addAction(self.quit_action)
         self.tray.setContextMenu(menu)
         self.tray.activated.connect(self.on_tray_activated)
         self.tray.show()
@@ -1060,6 +1059,7 @@ class MainWindow(QMainWindow):
         self.clear_btn.setToolTip(i18n.tr("btn.clear_history"))
         self.about_btn.setText(f"  {i18n.tr('btn.about')}")
         self.exit_btn.setText(f"  {i18n.tr('tray.quit')}")
+        self.quit_action.setText(i18n.tr("tray.quit"))
         self._populate_asr_lang()
         current_asr = self.config.get("asr_lang", "auto")
         for i in range(self.asr_lang_box.count()):
