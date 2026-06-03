@@ -11,6 +11,7 @@
     "hint.hold": "按住 {key} 录音",
     "settings.hotkey": "设置热键",
     "settings.press_key": "请按下新的热键（鼠标/键盘）",
+    "settings.remove_punc": "去标点（替换为空格）",
     "settings.auto_type": "自动输入",
     "settings.history": "保存历史",
     "settings.history_tip": "历史记录保存在：\n{path}",

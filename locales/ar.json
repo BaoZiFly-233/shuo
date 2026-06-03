@@ -59,5 +59,6 @@
     "asr_lang.ms": "الملايو",
     "asr_lang.no": "النرويجية",
     "asr_lang.pl": "البولندية",
-    "asr_lang.sv": "السويدية"
+    "asr_lang.sv": "السويدية",
+    "settings.remove_punc": ""
 }

@@ -59,5 +59,6 @@
     "asr_lang.ms": "Malaio",
     "asr_lang.no": "Norueguês",
     "asr_lang.pl": "Polonês",
-    "asr_lang.sv": "Sueco"
+    "asr_lang.sv": "Sueco",
+    "settings.remove_punc": ""
 }

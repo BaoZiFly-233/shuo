@@ -151,6 +151,7 @@ DEFAULT_CONFIG = {
     "language": "en",
     "asr_lang": "auto",
     "auto_type": True,
+    "remove_punc": False,
     "save_history": False
 }
 
@@ -718,6 +719,12 @@ class MainWindow(QMainWindow):
         self.history_cb.stateChanged.connect(self.on_history_changed)
         toolbar.addWidget(self.history_cb)
 
+        self.punc_cb = QCheckBox(i18n.tr("settings.remove_punc"))
+        self.punc_cb.setChecked(self.config.get("remove_punc", False))
+        self.punc_cb.stateChanged.connect(self.on_remove_punc_changed)
+        self.punc_cb.setVisible(i18n._COMPAT.get(self.config.get("language", "en"), self.config.get("language", "en")) == "zh")
+        toolbar.addWidget(self.punc_cb)
+
         self.clear_btn = QPushButton(_icon("fa5s.trash"), "")
         self.clear_btn.setFixedSize(28, 28)
         self.clear_btn.setToolTip(i18n.tr("btn.clear_history"))
@@ -1014,6 +1021,10 @@ class MainWindow(QMainWindow):
         self.config["save_history"] = (state == Qt.CheckState.Checked.value)
         Config.save(self.config)
 
+    def on_remove_punc_changed(self, state):
+        self.config["remove_punc"] = (state == Qt.CheckState.Checked.value)
+        Config.save(self.config)
+
     def clear_history(self):
         from PySide6.QtWidgets import QMessageBox
         box = QMessageBox(self)
@@ -1044,6 +1055,8 @@ class MainWindow(QMainWindow):
         self.auto_type_cb.setText(i18n.tr("settings.auto_type"))
         self.history_cb.setText(i18n.tr("settings.history"))
         self.history_cb.setToolTip(i18n.tr("settings.history_tip").format(path=str(HISTORY_PATH)))
+        self.punc_cb.setText(i18n.tr("settings.remove_punc"))
+        self.punc_cb.setVisible(i18n._COMPAT.get(lang, lang) == "zh")
         self.clear_btn.setToolTip(i18n.tr("btn.clear_history"))
         self.about_btn.setText(f"  {i18n.tr('btn.about')}")
         self.exit_btn.setText(f"  {i18n.tr('tray.quit')}")
@@ -1140,6 +1153,13 @@ class MainWindow(QMainWindow):
         self.btn.setIcon(_icon("fa5s.microphone", "#ffffff"))
         self.btn.setEnabled(True)
         if text.strip():
+            lang = self.config.get("language", "en")
+            real = i18n._COMPAT.get(lang, lang)
+            if real == "zh" and self.config.get("remove_punc", False):
+                import re
+                _PUNC = '，。！？、；：""\'\'（）【】《》…—,.!?;:\"\'()[]{}<>~·～—'
+                text = re.sub('[' + re.escape(_PUNC) + ']', ' ', text)
+                text = re.sub(r'\s+', ' ', text).strip()
             if self.config.get("save_history", False):
                 History.add(text)
             while self.result_layout.count() > 101:

@@ -59,5 +59,6 @@
     "asr_lang.ms": "มลายู",
     "asr_lang.no": "นอร์เวย์",
     "asr_lang.pl": "โปแลนด์",
-    "asr_lang.sv": "สวีเดน"
+    "asr_lang.sv": "สวีเดน",
+    "settings.remove_punc": ""
 }

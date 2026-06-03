@@ -59,5 +59,6 @@
     "asr_lang.ms": "Malayca",
     "asr_lang.no": "Norveççe",
     "asr_lang.pl": "Lehçe",
-    "asr_lang.sv": "İsveççe"
+    "asr_lang.sv": "İsveççe",
+    "settings.remove_punc": ""
 }

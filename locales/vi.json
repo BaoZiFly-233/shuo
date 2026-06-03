@@ -59,5 +59,6 @@
     "asr_lang.ms": "Tiếng Mã Lai",
     "asr_lang.no": "Tiếng Na Uy",
     "asr_lang.pl": "Tiếng Ba Lan",
-    "asr_lang.sv": "Tiếng Thụy Điển"
+    "asr_lang.sv": "Tiếng Thụy Điển",
+    "settings.remove_punc": ""
 }

@@ -11,6 +11,7 @@
     "hint.hold": "Hold {key} to record",
     "settings.hotkey": "Hotkey Settings",
     "settings.press_key": "Press new hotkey (mouse/keyboard)",
+    "settings.remove_punc": "Remove punctuation (replace with spaces)",
     "settings.auto_type": "Auto-type",
     "settings.history": "Save History",
     "settings.history_tip": "History is saved at:\n{path}",

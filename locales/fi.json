@@ -59,5 +59,6 @@
     "asr_lang.ms": "Malaiji",
     "asr_lang.no": "Norja",
     "asr_lang.pl": "Puola",
-    "asr_lang.sv": "Ruotsi"
+    "asr_lang.sv": "Ruotsi",
+    "settings.remove_punc": ""
 }
