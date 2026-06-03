@@ -976,13 +976,17 @@ class MainWindow(QMainWindow):
         self.config["language"] = lang
         Config.save(self.config)
         i18n.load(lang)
-        # 重建菜单（翻译已更新）
         self._lang_menu.clear()
         self._lang_menu.addAction(i18n.tr("lang.zh"), lambda: self._switch_lang("zh_CN"))
         self._lang_menu.addAction(i18n.tr("lang.en"), lambda: self._switch_lang("en"))
         self.setWindowTitle(i18n.tr("app.title"))
         self.settings_btn.setText(f"  {i18n.tr('btn.settings')}")
         self.auto_type_cb.setText(i18n.tr("settings.auto_type"))
+        self.history_cb.setText(i18n.tr("settings.history"))
+        self.history_cb.setToolTip(i18n.tr("settings.history_tip").format(path=str(HISTORY_PATH)))
+        self.clear_btn.setToolTip(i18n.tr("btn.clear_history"))
+        self.about_btn.setText(f"  {i18n.tr('btn.about')}")
+        self.exit_btn.setText(f"  {i18n.tr('tray.quit')}")
         self._update_lang_label()
         self.update_hint()
 
