@@ -665,6 +665,7 @@ class MainWindow(QMainWindow):
         self.recorder = None
         self.worker = None
         self._temp_wav = None
+        self._pending_wavs = []
         self.config = Config.load()
         self.debounce = QTimer()
         self.debounce.setSingleShot(True)
@@ -1080,16 +1081,6 @@ class MainWindow(QMainWindow):
         if self.debounce.isActive():
             self.debounce.stop()
             return
-        # 识别中不允许录音
-        if self.worker and self.worker.isRunning():
-            return
-        if self.worker:
-            try: self.worker.done.disconnect()
-            except Exception: pass
-            try: self.worker.error.disconnect()
-            except Exception: pass
-            self.worker.deleteLater()
-            self.worker = None
         # 如果旧录音线程还在跑，强制停掉
         if self.recorder and self.recorder.isRunning():
             self.recorder.stop()
@@ -1117,6 +1108,16 @@ class MainWindow(QMainWindow):
             self.btn.setIcon(_icon("fa5s.spinner", "#ffffff"))
 
     def on_recorded(self, path):
+        # 如果正在识别，排队
+        if self.worker and self.worker.isRunning():
+            self._pending_wavs.append(path)
+            n = len(self._pending_wavs)
+            self.status_label.setText(i18n.tr("status.transcribing") + f" ({n})")
+            self.btn.setEnabled(True)
+            return
+        self._start_infer(path)
+
+    def _start_infer(self, path):
         self.status_label.setText(i18n.tr("status.transcribing"))
         self.btn.setIcon(_icon("fa5s.spinner", "#ffffff"))
         self.btn.setEnabled(False)
@@ -1127,7 +1128,7 @@ class MainWindow(QMainWindow):
             try: self.worker.error.disconnect()
             except Exception: pass
             self.worker.deleteLater()
-        self._temp_wav = path  # 记下来等识别完删掉
+        self._temp_wav = path
         self.worker = InferWorker(self.pipeline, path, self.config.get("asr_lang", "auto"))
         self.worker.done.connect(self.on_result)
         self.worker.error.connect(self.on_error)
@@ -1141,8 +1142,7 @@ class MainWindow(QMainWindow):
         if text.strip():
             if self.config.get("save_history", False):
                 History.add(text)
-            # 最多保留 100 条卡片，超出的删掉
-            while self.result_layout.count() > 101:  # 101 = 100卡片 + 1 stretch
+            while self.result_layout.count() > 101:
                 item = self.result_layout.takeAt(self.result_layout.count() - 2)
                 if item and item.widget():
                     item.widget().deleteLater()
@@ -1151,12 +1151,19 @@ class MainWindow(QMainWindow):
             if self.auto_type_cb.isChecked():
                 QGuiApplication.clipboard().setText(text)
                 QTimer.singleShot(100, send_paste)
+        self._process_next()
 
     def on_error(self, msg):
         self._cleanup_temp_wav()
         self.status_label.setText(i18n.tr("btn.start"))
         self.btn.setIcon(_icon("fa5s.microphone", "#ffffff"))
         self.btn.setEnabled(True)
+        self._process_next()
+
+    def _process_next(self):
+        if self._pending_wavs:
+            path = self._pending_wavs.pop(0)
+            self._start_infer(path)
 
     def _cleanup_temp_wav(self):
         if self._temp_wav:
