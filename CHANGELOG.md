@@ -6,7 +6,7 @@
 - **i18n 翻译不完整**：清理 locales 中 12 个未使用的过期 key；切换语言时遗漏刷新历史记录、清空、关于、退出等控件，已补全
 
 ### 优化
-- **去掉对 npy 文件的 git 跟踪**：`Qwen3-ASR-0.6B-ONNX-CPU/` 目录整体 gitignore，`mel_filters.npy` 改为 librosa 实时计算，不再需要二进制文件入库
+- **去掉对 npy 文件的 git 跟踪**：`Qwen3-ASR-0.6B-ONNX-CPU/` 目录整体 gitignore，`mel_filters.npy` 改为外部下载，不再入库
 
 ## 0.1.7 — 2026-06-03
 
