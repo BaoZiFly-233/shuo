@@ -60,5 +60,13 @@
     "asr_lang.ms": "马来语",
     "asr_lang.no": "挪威语",
     "asr_lang.pl": "波兰语",
-    "asr_lang.sv": "瑞典语"
+    "asr_lang.sv": "瑞典语",
+    "settings.title": "设置",
+    "settings.change_hotkey": "更改",
+    "settings.bg_image": "背景图片",
+    "settings.bg_none": "(无 — 使用主题颜色)",
+    "settings.fit_mode": "填充模式",
+    "settings.opacity": "背景不透明度",
+    "settings.save": "保存",
+    "settings.choose_bg": "选择背景图片"
 }

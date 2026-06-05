@@ -3,10 +3,10 @@ from pathlib import Path
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
     QPushButton, QLabel, QComboBox, QHBoxLayout, QDialog, QCheckBox,
     QSystemTrayIcon, QMenu, QScrollArea, QSizePolicy, QGridLayout,
-    QFileDialog, QSlider, QLineEdit)
+    QFileDialog, QSlider, QLineEdit, QGraphicsOpacityEffect)
 from PySide6.QtCore import (QThread, Signal, QTimer, Qt, QSize, QRect, QRectF,
     QPointF)
-from PySide6.QtGui import QGuiApplication, QColor, QPainter, QFont, QAction, QPen, QFontMetrics
+from PySide6.QtGui import QGuiApplication, QColor, QPainter, QFont, QAction, QPen, QFontMetrics, QPixmap
 from pynput import mouse, keyboard as kb
 import sounddevice as sd
 import numpy as np
@@ -216,7 +216,7 @@ class SettingsDialog(QDialog):
         self.config = config
         self._temp_hotkey = config.get("hotkey", "f2")
         t = Theme.current()
-        self.setWindowTitle("Settings")
+        self.setWindowTitle(i18n.tr("settings.title"))
         self.setWindowIcon(_icon("fa5s.microphone"))
         self.setMinimumWidth(440)
         self.setStyleSheet(f"SettingsDialog {{ background:{t['bg']}; }}")
@@ -232,19 +232,19 @@ class SettingsDialog(QDialog):
         self.hk_edit.setReadOnly(True); self.hk_edit.setFixedWidth(140)
         self.hk_edit.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px 8px;")
         hk_row.addWidget(self.hk_edit)
-        change_btn = QPushButton("Change"); change_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        change_btn = QPushButton(i18n.tr("settings.change_hotkey")); change_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         change_btn.clicked.connect(self._change_hotkey)
         hk_row.addWidget(change_btn); hk_row.addStretch()
         layout.addLayout(hk_row)
         sep1 = QWidget(); sep1.setFixedHeight(1); sep1.setStyleSheet(f"background:{t['border']};")
         layout.addWidget(sep1)
         # background image
-        bg_label = QLabel("Background Image")
+        bg_label = QLabel(i18n.tr("settings.bg_image"))
         bg_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
         layout.addWidget(bg_label)
         bg_row = QHBoxLayout()
         self.bg_edit = QLineEdit(config.get("bg_image", "")); self.bg_edit.setReadOnly(True)
-        self.bg_edit.setPlaceholderText("(none - uses theme color)")
+        self.bg_edit.setPlaceholderText(i18n.tr("settings.bg_none"))
         self.bg_edit.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px 8px;")
         bg_row.addWidget(self.bg_edit)
         browse_btn = QPushButton("..."); browse_btn.setFixedWidth(36); browse_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -254,7 +254,7 @@ class SettingsDialog(QDialog):
         clear_btn.clicked.connect(self._clear_bg)
         bg_row.addWidget(clear_btn)
         layout.addLayout(bg_row)
-        fit_label = QLabel("Fit Mode"); fit_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        fit_label = QLabel(i18n.tr("settings.fit_mode")); fit_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
         layout.addWidget(fit_label)
         self.fit_box = QComboBox(); self.fit_box.addItems(["Cover", "Contain", "Tile", "Center"])
         cur_fit = config.get("bg_fit", "cover").capitalize()
@@ -265,7 +265,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.fit_box)
         sep2 = QWidget(); sep2.setFixedHeight(1); sep2.setStyleSheet(f"background:{t['border']};")
         layout.addWidget(sep2)
-        opacity_label = QLabel("Window Opacity"); opacity_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        opacity_label = QLabel(i18n.tr("settings.opacity")); opacity_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
         layout.addWidget(opacity_label)
         opacity_row = QHBoxLayout()
         self.opacity_slider = QSlider(Qt.Orientation.Horizontal); self.opacity_slider.setRange(10, 100)
@@ -282,7 +282,7 @@ class SettingsDialog(QDialog):
         cancel_btn = QPushButton(i18n.tr("btn.cancel")); cancel_btn.setFixedWidth(90)
         cancel_btn.clicked.connect(self.reject)
         btn_row.addWidget(cancel_btn)
-        save_btn = QPushButton("Save"); save_btn.setFixedWidth(90)
+        save_btn = QPushButton(i18n.tr("settings.save")); save_btn.setFixedWidth(90)
         save_btn.setStyleSheet(f"QPushButton {{ background:{Theme.accent().name()}; color:#ffffff; border:none; border-radius:4px; padding:6px 16px; font-weight:bold; }} QPushButton:hover {{ background:{Theme.accent().lighter(115).name()}; }}")
         save_btn.clicked.connect(self._save)
         btn_row.addWidget(save_btn)
@@ -294,7 +294,7 @@ class SettingsDialog(QDialog):
             hk = dlg.get_hotkey()
             if hk: self._temp_hotkey = hk; self.hk_edit.setText(hk.upper())
     def _browse_bg(self):
-        path, _ = QFileDialog.getOpenFileName(self, "Choose Background Image", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif)")
+        path, _ = QFileDialog.getOpenFileName(self, i18n.tr("settings.choose_bg"), "", "Images (*.png *.jpg *.jpeg *.bmp *.gif)")
         if path: self.bg_edit.setText(str(Path(path)))
     def _clear_bg(self): self.bg_edit.clear()
     def _on_opacity_changed(self, val): self.opacity_pct.setText(f"{val}%")
@@ -796,8 +796,6 @@ class MainWindow(QMainWindow):
 
         self._apply_theme()
 
-        self.setWindowOpacity(self.config.get("opacity", 100) / 100.0)
-
         self.winId()
 
     def setup_tray(self):
@@ -832,6 +830,13 @@ class MainWindow(QMainWindow):
         self.tray.hide()
         QApplication.quit()
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if hasattr(self, '_bg_label') and self._bg_label:
+            cw = self.centralWidget()
+            if cw:
+                self._bg_label.setGeometry(cw.rect())
+
     def closeEvent(self, event):
         event.ignore()
         self.hide()
@@ -842,20 +847,32 @@ class MainWindow(QMainWindow):
 
         cw = self.centralWidget()
         if cw:
-            css_parts = [f"background: {t['bg']};"]
+            cw.setStyleSheet(f"QWidget#centralWidget {{ background: {t['bg']}; }}")
+
+            # Remove any existing bg overlay
+            for child in cw.findChildren(QLabel, "bg_overlay"):
+                child.deleteLater()
+
             bg_image = self.config.get("bg_image", "")
             if bg_image and Path(bg_image).is_file():
-                bg_fit = self.config.get("bg_fit", "cover")
-                img_path = str(Path(bg_image).resolve().as_posix())
-                fit_css = {
-                    "cover":   "background-repeat: no-repeat; background-position: center; background-size: cover;",
-                    "contain": "background-repeat: no-repeat; background-position: center; background-size: contain;",
-                    "tile":    "background-repeat: repeat;",
-                    "center":  "background-repeat: no-repeat; background-position: center;",
-                }.get(bg_fit, "background-size: cover; background-position: center; background-repeat: no-repeat;")
-                css_parts.append(fit_css)
-                css_parts.append(f"background-image: url('{img_path}');")
-            cw.setStyleSheet(f"QWidget#centralWidget {{ {' '.join(css_parts)} }}")
+                opacity_val = self.config.get("opacity", 100) / 100.0
+                pixmap = QPixmap(str(Path(bg_image).resolve()))
+                if not pixmap.isNull():
+                    bg_label = QLabel(cw)
+                    bg_label.setObjectName("bg_overlay")
+                    bg_label.setPixmap(pixmap)
+                    bg_label.setScaledContents(True)  # scales pixmap to fill label
+                    bg_label.setGeometry(cw.rect())
+                    effect = QGraphicsOpacityEffect()
+                    effect.setOpacity(opacity_val)
+                    bg_label.setGraphicsEffect(effect)
+                    bg_label.lower()
+                    bg_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+                    bg_label.show()
+                    self._bg_label = bg_label
+            else:
+                self._bg_label = None
+
             cw.repaint()
 
         self._apply_btn_styles()
@@ -923,7 +940,6 @@ class MainWindow(QMainWindow):
         if dlg.exec() == QDialog.DialogCode.Accepted:
             Config.save(self.config)
             gh.save(self.config.get("hotkey", "f2"))
-            self.setWindowOpacity(self.config.get("opacity", 100) / 100.0)
             self._apply_theme()
         gh.start(on_down=self.hotkey_pressed.emit, on_up=self.hotkey_released.emit)
         self.update_hint()

@@ -60,5 +60,13 @@
     "asr_lang.no": "ノルウェー語",
     "asr_lang.pl": "ポーランド語",
     "asr_lang.sv": "スウェーデン語",
-    "settings.remove_punc": ""
+    "settings.remove_punc": "",
+    "settings.title": "設定",
+    "settings.change_hotkey": "変更",
+    "settings.bg_image": "背景画像",
+    "settings.bg_none": "(なし — テーマ色を使用)",
+    "settings.fit_mode": "表示モード",
+    "settings.opacity": "背景の不透明度",
+    "settings.save": "保存",
+    "settings.choose_bg": "背景画像を選択"
 }

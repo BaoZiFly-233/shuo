@@ -60,5 +60,13 @@
     "asr_lang.no": "Норвежский",
     "asr_lang.pl": "Польский",
     "asr_lang.sv": "Шведский",
-    "settings.remove_punc": ""
+    "settings.remove_punc": "",
+    "settings.title": "Settings",
+    "settings.change_hotkey": "Change",
+    "settings.bg_image": "Background Image",
+    "settings.bg_none": "(none — uses theme color)",
+    "settings.fit_mode": "Fit Mode",
+    "settings.opacity": "Background Opacity",
+    "settings.save": "Save",
+    "settings.choose_bg": "Choose Background Image"
 }

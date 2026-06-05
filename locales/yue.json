@@ -60,5 +60,13 @@
     "asr_lang.no": "挪威文",
     "asr_lang.pl": "波兰文",
     "asr_lang.sv": "瑞典文",
-    "settings.remove_punc": ""
+    "settings.remove_punc": "",
+    "settings.title": "設置",
+    "settings.change_hotkey": "更改",
+    "settings.bg_image": "背景圖片",
+    "settings.bg_none": "(無 — 使用主題顔色)",
+    "settings.fit_mode": "填充模式",
+    "settings.opacity": "背景不透明度",
+    "settings.save": "保存",
+    "settings.choose_bg": "選擇背景圖片"
 }

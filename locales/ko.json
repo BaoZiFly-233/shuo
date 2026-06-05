@@ -60,5 +60,13 @@
     "asr_lang.no": "노르웨이어",
     "asr_lang.pl": "폴란드어",
     "asr_lang.sv": "스웨덴어",
-    "settings.remove_punc": ""
+    "settings.remove_punc": "",
+    "settings.title": "설정",
+    "settings.change_hotkey": "변경",
+    "settings.bg_image": "배경 이미지",
+    "settings.bg_none": "(없음 — 테마 색상 사용)",
+    "settings.fit_mode": "표시 모드",
+    "settings.opacity": "배경 불투명도",
+    "settings.save": "저장",
+    "settings.choose_bg": "배경 이미지 선택"
 }
