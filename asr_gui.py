@@ -339,8 +339,8 @@ class HotkeyDialog(QDialog):
             self._capture_signal.emit("+".join(parts))
             return False
 
-        self._ml = mouse.Listener(on_click=on_click)
-        self._kl = kb.Listener(on_press=on_press)
+        self._ml = mouse.Listener(on_click=on_click, suppress=True)
+        self._kl = kb.Listener(on_press=on_press, suppress=True)
         self._ml.start()
         self._kl.start()
 

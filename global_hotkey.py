@@ -1,4 +1,4 @@
-import json, threading
+import json, threading, time
 from pathlib import Path
 from pynput import mouse, keyboard
 
@@ -53,6 +53,7 @@ def start(on_down=None, on_up=None):
 
     with _listener_lock:
         stop()
+        time.sleep(0.05)  # let Windows hook subsystem settle
 
         if is_mouse:
             btn = mouse.Button.x2 if key_name == "xbutton2" else mouse.Button.x1
@@ -123,4 +124,5 @@ def stop():
         if _listener:
             for l in _listener:
                 l.stop()
+                l.join(timeout=2.0)  # wait for thread to actually exit
             _listener = None
