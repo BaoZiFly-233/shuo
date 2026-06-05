@@ -594,6 +594,51 @@ def _icon(name, color=None):
     return qta.icon(name, color=color or Theme.current()["text"])
 
 
+class BgLabel(QLabel):
+    """Background image label that respects fit mode (cover, contain, tile, center)."""
+    def __init__(self, pixmap, fit_mode="cover", parent=None):
+        super().__init__(parent)
+        self._pixmap = pixmap
+        self._fit_mode = fit_mode
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+
+    def set_fit_mode(self, mode):
+        self._fit_mode = mode
+        self.update()
+
+    def paintEvent(self, event):
+        if self._pixmap.isNull():
+            return
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        pw, ph = self._pixmap.width(), self._pixmap.height()
+        ww, wh = self.width(), self.height()
+        if pw <= 0 or ph <= 0 or ww <= 0 or wh <= 0:
+            return
+
+        if self._fit_mode == "cover":
+            # Scale to cover entire widget, crop
+            scale = max(ww / pw, wh / ph)
+            sw, sh = int(pw * scale), int(ph * scale)
+            x, y = (ww - sw) // 2, (wh - sh) // 2
+            painter.drawPixmap(x, y, sw, sh, self._pixmap)
+        elif self._fit_mode == "contain":
+            # Scale to fit within widget, letterbox
+            scale = min(ww / pw, wh / ph)
+            sw, sh = int(pw * scale), int(ph * scale)
+            x, y = (ww - sw) // 2, (wh - sh) // 2
+            painter.drawPixmap(x, y, sw, sh, self._pixmap)
+        elif self._fit_mode == "tile":
+            # Repeat the image at original size
+            for tx in range(0, ww, pw):
+                for ty in range(0, wh, ph):
+                    painter.drawPixmap(tx, ty, self._pixmap)
+        elif self._fit_mode == "center":
+            # Center without scaling
+            x, y = (ww - pw) // 2, (wh - ph) // 2
+            painter.drawPixmap(x, y, self._pixmap)
+
+
 class MainWindow(QMainWindow):
     hotkey_pressed = Signal()
     hotkey_released = Signal()
@@ -850,24 +895,22 @@ class MainWindow(QMainWindow):
             cw.setStyleSheet(f"QWidget#centralWidget {{ background: {t['bg']}; }}")
 
             # Remove any existing bg overlay
-            for child in cw.findChildren(QLabel, "bg_overlay"):
+            for child in cw.findChildren(BgLabel, "bg_overlay"):
                 child.deleteLater()
 
             bg_image = self.config.get("bg_image", "")
             if bg_image and Path(bg_image).is_file():
                 opacity_val = self.config.get("opacity", 100) / 100.0
+                fit_mode = self.config.get("bg_fit", "cover")
                 pixmap = QPixmap(str(Path(bg_image).resolve()))
                 if not pixmap.isNull():
-                    bg_label = QLabel(cw)
+                    bg_label = BgLabel(pixmap, fit_mode=fit_mode, parent=cw)
                     bg_label.setObjectName("bg_overlay")
-                    bg_label.setPixmap(pixmap)
-                    bg_label.setScaledContents(True)  # scales pixmap to fill label
                     bg_label.setGeometry(cw.rect())
                     effect = QGraphicsOpacityEffect()
                     effect.setOpacity(opacity_val)
                     bg_label.setGraphicsEffect(effect)
                     bg_label.lower()
-                    bg_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
                     bg_label.show()
                     self._bg_label = bg_label
             else:
