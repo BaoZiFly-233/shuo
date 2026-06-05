@@ -1,6 +1,8 @@
-import json, threading, time
+import json, threading, time, ctypes, logging
 from pathlib import Path
 from pynput import mouse, keyboard
+
+_log = logging.getLogger("shuo")
 
 CONFIG_DIR = Path.home() / ".shuo"
 CONFIG_DIR.mkdir(exist_ok=True)
@@ -15,6 +17,13 @@ _on_up = None
 _hotkey_active = False
 _last_down = 0.0
 DEBOUNCE_MS = 300  # minimum ms between consecutive hotkey triggers
+
+def is_admin():
+    """Check if running with administrator privileges on Windows."""
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    except Exception:
+        return True  # non-Windows or can't check — assume OK
 
 def load():
     global _hotkey
@@ -57,6 +66,11 @@ def start(on_down=None, on_up=None):
     with _listener_lock:
         stop()
         time.sleep(0.05)  # let Windows hook subsystem settle
+
+        # Warn if not running as admin (global hooks may fail for elevated windows)
+        if not is_admin():
+            _log.warning("Not running as administrator — hotkey may not work "
+                         "in elevated windows (Task Manager, UAC prompts, etc.)")
 
         if is_mouse:
             btn = mouse.Button.x2 if key_name == "xbutton2" else mouse.Button.x1

@@ -1,13 +1,12 @@
-import sys, tempfile, wave, shutil, json, logging
+import sys, tempfile, wave, shutil
 from pathlib import Path
-from datetime import datetime
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
     QPushButton, QLabel, QComboBox, QHBoxLayout, QDialog, QCheckBox,
     QSystemTrayIcon, QMenu, QScrollArea, QSizePolicy, QGridLayout,
     QFileDialog, QSlider, QLineEdit)
 from PySide6.QtCore import (QThread, Signal, QTimer, Qt, QSize, QRect, QRectF,
-    QPointF, QObject, QAbstractNativeEventFilter)
-from PySide6.QtGui import QGuiApplication, QColor, QPainter, QFont, QPalette, QAction, QPen, QFontMetrics
+    QPointF)
+from PySide6.QtGui import QGuiApplication, QColor, QPainter, QFont, QAction, QPen, QFontMetrics
 from pynput import mouse, keyboard as kb
 import sounddevice as sd
 import numpy as np
@@ -29,87 +28,9 @@ def send_paste():
 import i18n
 import global_hotkey as gh
 
-# ── 主题 ──────────────────────────────────────────────────────────────
-
-class Theme:
-    """显式颜色主题。不依赖 QPalette 传播（在 Win11 下不可靠）。"""
-
-    # 亮色
-    LIGHT = {
-        "bg":         "#ffffff",
-        "surface":    "#f3f3f3",
-        "border":     "#e0e0e0",
-        "text":       "#1e1e1e",
-        "sub_text":   "#666666",
-        "overlay_bg": "rgba(0,0,0,30)",
-    }
-    # 暗色
-    DARK = {
-        "bg":         "#1e1e1e",
-        "surface":    "#2d2d2d",
-        "border":     "#3d3d3d",
-        "text":       "#f0f0f0",
-        "sub_text":   "#999999",
-        "overlay_bg": "rgba(0,0,0,140)",
-    }
-
-    @classmethod
-    def is_dark(cls):
-        return QApplication.styleHints().colorScheme() == Qt.ColorScheme.Dark
-
-    @classmethod
-    def current(cls):
-        return cls.DARK if cls.is_dark() else cls.LIGHT
-
-    @classmethod
-    def accent(cls):
-        """系统强调色（来自 QPalette，它对此角色是可靠的）。"""
-        pal = QApplication.palette()
-        try:
-            return pal.color(QPalette.ColorRole.Accent)
-        except AttributeError:
-            return pal.color(QPalette.ColorRole.Highlight)
-
-
-class _ThemeWatcher(QObject, QAbstractNativeEventFilter):
-    """Win32：监听 WM_SETTINGCHANGE → 注册表变了 → 通知 MainWindow 刷新。"""
-    changed = Signal()
-
-    def nativeEventFilter(self, eventType, message):
-        if eventType in (b"windows_generic_MSG", b"MSG"):
-            msg = int(message)
-            if msg in (0x001A, 0x031E):
-                # 延迟 100ms 等注册表落定
-                QTimer.singleShot(100, self.changed.emit)
-        return False, 0
-
-
-def _apply_title_bar(window, dark):
-    try:
-        DWMWA_USE_IMMERSIVE_DARK_MODE = 20
-        value = ctypes.c_int(1 if dark else 0)
-        ctypes.windll.dwmapi.DwmSetWindowAttribute(
-            int(window.winId()),
-            DWMWA_USE_IMMERSIVE_DARK_MODE,
-            ctypes.byref(value),
-            ctypes.sizeof(value))
-    except:
-        pass
-
-
-# ── 用户目录配置 ──────────────────────────────────────────────────────
-USER_DIR = Path.home() / ".shuo"
-USER_DIR.mkdir(exist_ok=True)
-CONFIG_PATH = USER_DIR / "config.json"
-HISTORY_PATH = USER_DIR / "history.json"
-LOG_PATH = USER_DIR / "shuo.log"
-
-# 日志配置（UTF-8）
-file_handler = logging.FileHandler(str(LOG_PATH), encoding="utf-8")
-file_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
-logger = logging.getLogger("shuo")
-logger.setLevel(logging.INFO)
-logger.addHandler(file_handler)
+from theme import Theme, _ThemeWatcher, _apply_title_bar
+from config import (USER_DIR, CONFIG_PATH, HISTORY_PATH, LOG_PATH,
+                    logger, DEFAULT_CONFIG, Config, History)
 
 model_root = Path(__file__).parent / "Qwen3-ASR-0.6B-ONNX-CPU"
 from onnx_inference import OnnxAsrPipeline
@@ -152,81 +73,6 @@ ASR_LANGUAGES = [
     ("sv", "asr_lang.sv"),
 ]
 
-DEFAULT_CONFIG = {
-    "hotkey": "f2",
-    "language": "en",
-    "asr_lang": "auto",
-    "auto_type": True,
-    "remove_punc": False,
-    "save_history": False,
-    "bg_image": "",
-    "bg_fit": "cover",
-    "opacity": 100,
-}
-
-
-class Config:
-    """配置管理"""
-
-    @staticmethod
-    def load():
-        if CONFIG_PATH.exists():
-            try:
-                with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-                    cfg = json.load(f)
-                    # 合并默认值
-                    for k, v in DEFAULT_CONFIG.items():
-                        if k not in cfg:
-                            cfg[k] = v
-                    return cfg
-            except Exception as e:
-                logger.error(f"加载配置失败: {e}")
-        return DEFAULT_CONFIG.copy()
-
-    @staticmethod
-    def save(cfg):
-        try:
-            with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-                json.dump(cfg, f, indent=2, ensure_ascii=False)
-            logger.info("配置已保存")
-        except Exception as e:
-            logger.error(f"保存配置失败: {e}")
-
-
-class History:
-    """历史记录管理"""
-
-    @staticmethod
-    def load():
-        if HISTORY_PATH.exists():
-            try:
-                with open(HISTORY_PATH, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.error(f"加载历史失败: {e}")
-        return []
-
-    @staticmethod
-    def save(items):
-        try:
-            with open(HISTORY_PATH, "w", encoding="utf-8") as f:
-                json.dump(items, f, indent=2, ensure_ascii=False)
-        except Exception as e:
-            logger.error(f"保存历史失败: {e}")
-
-    @staticmethod
-    def add(text):
-        items = History.load()
-        items.append({
-            "text": text,
-            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        })
-        # 最多保留 500 条
-        if len(items) > 500:
-            items = items[-500:]
-        History.save(items)
-        return items
-
 
 class Loader(QThread):
     done = Signal(object)
@@ -254,28 +100,27 @@ class Recorder(QThread):
     def __init__(self):
         super().__init__()
         self._running = False
-        self._frames = []
 
     def run(self):
         self._running = True
-        self._frames = []
         logger.info("开始录音")
         stream = sd.InputStream(samplerate=SAMPLE_RATE, channels=CHANNELS,
                                 dtype=AUDIO_DTYPE, blocksize=CHUNK)
         stream.start()
+        tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+        wf = wave.open(tmp.name, "wb")
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(SAMPLE_WIDTH)
+        wf.setframerate(SAMPLE_RATE)
+        frame_count = 0
         while self._running:
             data, _ = stream.read(CHUNK)
-            self._frames.append(data.tobytes())
+            wf.writeframes(data.tobytes())
+            frame_count += 1
+        wf.close()
         stream.stop()
         stream.close()
-        tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
-        with wave.open(tmp.name, "wb") as wf:
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(SAMPLE_WIDTH)
-            wf.setframerate(SAMPLE_RATE)
-            wf.writeframes(b"".join(self._frames))
-        duration = len(self._frames) * CHUNK / SAMPLE_RATE
-        self._frames.clear()  # 立即释放 PCM 内存（可能数百 MB）
+        duration = frame_count * CHUNK / SAMPLE_RATE
         logger.info(f"录音结束，时长 {duration:.1f}s")
         self.finished.emit(tmp.name)
 
