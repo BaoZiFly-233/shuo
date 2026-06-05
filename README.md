@@ -67,10 +67,10 @@ App creates `~/.shuo/` on first launch:
 ```bash
 pip install pyinstaller
 
-# Windows（CMD，分号分隔）
+# Windows (semicolons)
 pyinstaller --windowed --name Shuo --icon=shuo.ico -y --add-data "locales;locales" --add-data "Qwen3-ASR-0.6B-ONNX-CPU;Qwen3-ASR-0.6B-ONNX-CPU" --add-data "mel_filters.npy;." --add-data "theme.py;." --add-data "config.py;." --hidden-import onnxruntime --hidden-import tokenizers --hidden-import transformers --hidden-import sounddevice --hidden-import numpy --exclude-module torch --exclude-module sklearn --exclude-module tensorflow asr_gui.py
 
-# macOS / Linux（冒号分隔）
+# macOS / Linux (colons)
 pyinstaller --windowed --name Shuo --icon=shuo.ico -y --add-data "locales:locales" --add-data "Qwen3-ASR-0.6B-ONNX-CPU:Qwen3-ASR-0.6B-ONNX-CPU" --add-data "mel_filters.npy:." --add-data "theme.py:." --add-data "config.py:." --hidden-import onnxruntime --hidden-import tokenizers --hidden-import transformers --hidden-import sounddevice --hidden-import numpy --exclude-module torch --exclude-module sklearn --exclude-module tensorflow asr_gui.py
 ```
 
