@@ -1143,7 +1143,7 @@ class MainWindow(QMainWindow):
             real = i18n._COMPAT.get(lang, lang)
             if real == "zh" and self.config.get("remove_punc", False):
                 import re
-                _PUNC = '...,.!?;:()[]{}<>~'
+                _PUNC = '，。！？、；：""''（）【】《》…—.!?;:\"\'()[]{}<>~·～—'
                 text = re.sub('[' + re.escape(_PUNC) + ']', ' ', text)
                 text = re.sub(r'\s+', ' ', text).strip()
             if self.config.get("save_history", False):
