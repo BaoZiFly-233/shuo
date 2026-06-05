@@ -18,8 +18,11 @@ _VK_CODE = {"V": 0x56, "LCONTROL": 0xA2}
 user32 = ctypes.windll.user32
 
 def send_paste():
+    import time
     user32.keybd_event(_VK_CODE["LCONTROL"], 0, 0, 0)
+    time.sleep(0.03)
     user32.keybd_event(_VK_CODE["V"], 0, 0, 0)
+    time.sleep(0.03)
     user32.keybd_event(_VK_CODE["V"], 0, 2, 0)
     user32.keybd_event(_VK_CODE["LCONTROL"], 0, 2, 0)
 

@@ -13,6 +13,8 @@ _listener_lock = threading.RLock()  # 可重入锁，避免 start() 调用 stop(
 _on_down = None
 _on_up = None
 _hotkey_active = False
+_last_down = 0.0
+DEBOUNCE_MS = 300  # minimum ms between consecutive hotkey triggers
 
 def load():
     global _hotkey
@@ -46,6 +48,7 @@ def start(on_down=None, on_up=None):
     _on_down = on_down
     _on_up = on_up
     _hotkey_active = False
+    _last_down = 0.0
 
     parts = _hotkey.split("+")
     key_name = parts[-1]
@@ -58,10 +61,14 @@ def start(on_down=None, on_up=None):
         if is_mouse:
             btn = mouse.Button.x2 if key_name == "xbutton2" else mouse.Button.x1
             def _on_click(x, y, b, pressed):
-                global _hotkey_active
+                global _hotkey_active, _last_down
                 if b != btn: return
                 if pressed and not _hotkey_active:
+                    now = time.monotonic()
+                    if now - _last_down < DEBOUNCE_MS / 1000.0:
+                        return
                     _hotkey_active = True
+                    _last_down = now
                     if _on_down: _on_down()
                 elif not pressed and _hotkey_active:
                     _hotkey_active = False
@@ -76,7 +83,7 @@ def start(on_down=None, on_up=None):
             _pressed = set()
 
             def _on_press(key):
-                global _hotkey_active
+                global _hotkey_active, _last_down
                 if isinstance(key, keyboard.Key):
                     k = key.name.lower()
                 else:
@@ -92,7 +99,11 @@ def start(on_down=None, on_up=None):
                     if (needs_ctrl and "ctrl" not in _pressed): return True
                     if (needs_shift and "shift" not in _pressed): return True
                     if (needs_alt and "alt" not in _pressed): return True
+                    now = time.monotonic()
+                    if now - _last_down < DEBOUNCE_MS / 1000.0:
+                        return True
                     _hotkey_active = True
+                    _last_down = now
                     if _on_down: _on_down()
                 return True
 
