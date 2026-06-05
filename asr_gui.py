@@ -38,8 +38,8 @@ from onnx_inference import OnnxAsrPipeline
 SAMPLE_RATE = 16000
 CHUNK = 1024
 AUDIO_DTYPE = "int16"
-CHANNELS = 1
 SAMPLE_WIDTH = 2  # bytes per sample for int16
+CHANNELS = 1
 DEBOUNCE_MS = 300
 
 ASR_LANGUAGES = [
@@ -85,12 +85,12 @@ class Loader(QThread):
             tok_dst = mdir / "tokenizer.json"
             if tok_src.exists() and not tok_dst.exists():
                 shutil.copy2(str(tok_src), str(tok_dst))
-            logger.info("开始加载模型...")
+            logger.info("Loading model...")
             pipeline = OnnxAsrPipeline(onnx_dir=str(mdir), num_threads=6)
-            logger.info("模型加载完成")
+            logger.info("Model loaded")
             self.done.emit(pipeline)
         except Exception as e:
-            logger.error(f"模型加载失败: {e}")
+            logger.error(f"Model load failed: {e}")
             self.error.emit(str(e))
 
 
@@ -103,7 +103,7 @@ class Recorder(QThread):
 
     def run(self):
         self._running = True
-        logger.info("开始录音")
+        logger.info("Recording started")
         stream = sd.InputStream(samplerate=SAMPLE_RATE, channels=CHANNELS,
                                 dtype=AUDIO_DTYPE, blocksize=CHUNK)
         stream.start()
@@ -121,7 +121,7 @@ class Recorder(QThread):
         stream.stop()
         stream.close()
         duration = frame_count * CHUNK / SAMPLE_RATE
-        logger.info(f"录音结束，时长 {duration:.1f}s")
+        logger.info(f"Recording finished, duration {duration:.1f}s")
         self.finished.emit(tmp.name)
 
     def stop(self):
@@ -140,15 +140,15 @@ class InferWorker(QThread):
 
     def run(self):
         try:
-            logger.info("开始识别...")
+            logger.info("Transcribing...")
             kwargs = {}
             if self.asr_lang and self.asr_lang != "auto":
                 kwargs["language"] = self.asr_lang
             result = self.pipeline.transcribe(self.audio_path, **kwargs)
-            logger.info("识别完成")
+            logger.info("Transcription done")
             self.done.emit(result["text"])
         except Exception as e:
-            logger.error(f"识别失败: {e}")
+            logger.error(f"Transcription failed: {e}")
             self.error.emit(str(e))
 
 
@@ -210,122 +210,79 @@ class HotkeyDialog(QDialog):
 
 
 class SettingsDialog(QDialog):
-    """设置对话框：热键、背景图片、透明度"""
-
+    """Settings dialog: hotkey, background image, opacity"""
     def __init__(self, config, parent=None):
         super().__init__(parent)
         self.config = config
         self._temp_hotkey = config.get("hotkey", "f2")
         t = Theme.current()
-
         self.setWindowTitle("Settings")
         self.setWindowIcon(_icon("fa5s.microphone"))
         self.setMinimumWidth(440)
         self.setStyleSheet(f"SettingsDialog {{ background:{t['bg']}; }}")
-
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
         layout.setContentsMargins(20, 16, 20, 16)
-
-        # ── 热键 ──
+        # hotkey row
         hk_label = QLabel(i18n.tr("settings.hotkey"))
         hk_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
         layout.addWidget(hk_label)
-
         hk_row = QHBoxLayout()
         self.hk_edit = QLineEdit(self._temp_hotkey.upper())
-        self.hk_edit.setReadOnly(True)
-        self.hk_edit.setFixedWidth(140)
+        self.hk_edit.setReadOnly(True); self.hk_edit.setFixedWidth(140)
         self.hk_edit.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px 8px;")
         hk_row.addWidget(self.hk_edit)
-        change_btn = QPushButton("Change")
-        change_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        change_btn = QPushButton("Change"); change_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         change_btn.clicked.connect(self._change_hotkey)
-        hk_row.addWidget(change_btn)
-        hk_row.addStretch()
+        hk_row.addWidget(change_btn); hk_row.addStretch()
         layout.addLayout(hk_row)
-
-        # ── 分隔线 ──
-        sep1 = QWidget()
-        sep1.setFixedHeight(1)
-        sep1.setStyleSheet(f"background:{t['border']};")
+        sep1 = QWidget(); sep1.setFixedHeight(1); sep1.setStyleSheet(f"background:{t['border']};")
         layout.addWidget(sep1)
-
-        # ── 背景图片 ──
+        # background image
         bg_label = QLabel("Background Image")
         bg_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
         layout.addWidget(bg_label)
-
         bg_row = QHBoxLayout()
-        self.bg_edit = QLineEdit(config.get("bg_image", ""))
-        self.bg_edit.setReadOnly(True)
-        self.bg_edit.setPlaceholderText("(none — uses theme color)")
+        self.bg_edit = QLineEdit(config.get("bg_image", "")); self.bg_edit.setReadOnly(True)
+        self.bg_edit.setPlaceholderText("(none - uses theme color)")
         self.bg_edit.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px 8px;")
         bg_row.addWidget(self.bg_edit)
-        browse_btn = QPushButton("...")
-        browse_btn.setFixedWidth(36)
-        browse_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        browse_btn = QPushButton("..."); browse_btn.setFixedWidth(36); browse_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         browse_btn.clicked.connect(self._browse_bg)
         bg_row.addWidget(browse_btn)
-        clear_btn = QPushButton(_icon("fa5s.times"), "")
-        clear_btn.setFixedWidth(36)
-        clear_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        clear_btn = QPushButton(_icon("fa5s.times"), ""); clear_btn.setFixedWidth(36); clear_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         clear_btn.clicked.connect(self._clear_bg)
         bg_row.addWidget(clear_btn)
         layout.addLayout(bg_row)
-
-        # ── 填充模式 ──
-        fit_label = QLabel("Fit Mode")
-        fit_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        fit_label = QLabel("Fit Mode"); fit_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
         layout.addWidget(fit_label)
-
-        self.fit_box = QComboBox()
-        self.fit_box.addItems(["Cover", "Contain", "Tile", "Center"])
+        self.fit_box = QComboBox(); self.fit_box.addItems(["Cover", "Contain", "Tile", "Center"])
         cur_fit = config.get("bg_fit", "cover").capitalize()
         for i in range(self.fit_box.count()):
             if self.fit_box.itemText(i).lower() == cur_fit.lower():
-                self.fit_box.setCurrentIndex(i)
-                break
+                self.fit_box.setCurrentIndex(i); break
         self.fit_box.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px;")
         layout.addWidget(self.fit_box)
-
-        # ── 分隔线 ──
-        sep2 = QWidget()
-        sep2.setFixedHeight(1)
-        sep2.setStyleSheet(f"background:{t['border']};")
+        sep2 = QWidget(); sep2.setFixedHeight(1); sep2.setStyleSheet(f"background:{t['border']};")
         layout.addWidget(sep2)
-
-        # ── 透明度 ──
-        opacity_label = QLabel("Window Opacity")
-        opacity_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        opacity_label = QLabel("Window Opacity"); opacity_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
         layout.addWidget(opacity_label)
-
         opacity_row = QHBoxLayout()
-        self.opacity_slider = QSlider(Qt.Orientation.Horizontal)
-        self.opacity_slider.setRange(10, 100)
+        self.opacity_slider = QSlider(Qt.Orientation.Horizontal); self.opacity_slider.setRange(10, 100)
         self.opacity_slider.setValue(config.get("opacity", 100))
-        self.opacity_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
-        self.opacity_slider.setTickInterval(10)
+        self.opacity_slider.setTickPosition(QSlider.TickPosition.TicksBelow); self.opacity_slider.setTickInterval(10)
         self.opacity_slider.valueChanged.connect(self._on_opacity_changed)
         opacity_row.addWidget(self.opacity_slider)
-        self.opacity_pct = QLabel(f"{self.opacity_slider.value()}%")
-        self.opacity_pct.setFixedWidth(40)
-        self.opacity_pct.setStyleSheet(f"color:{t['text']};")
-        self.opacity_pct.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        self.opacity_pct = QLabel(f"{self.opacity_slider.value()}%"); self.opacity_pct.setFixedWidth(40)
+        self.opacity_pct.setStyleSheet(f"color:{t['text']};"); self.opacity_pct.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         opacity_row.addWidget(self.opacity_pct)
         layout.addLayout(opacity_row)
-
         layout.addStretch()
-
-        # ── 按钮栏 ──
-        btn_row = QHBoxLayout()
-        btn_row.addStretch()
-        cancel_btn = QPushButton(i18n.tr("btn.cancel"))
-        cancel_btn.setFixedWidth(90)
+        btn_row = QHBoxLayout(); btn_row.addStretch()
+        cancel_btn = QPushButton(i18n.tr("btn.cancel")); cancel_btn.setFixedWidth(90)
         cancel_btn.clicked.connect(self.reject)
         btn_row.addWidget(cancel_btn)
-        save_btn = QPushButton("Save")
-        save_btn.setFixedWidth(90)
+        save_btn = QPushButton("Save"); save_btn.setFixedWidth(90)
         save_btn.setStyleSheet(f"QPushButton {{ background:{Theme.accent().name()}; color:#ffffff; border:none; border-radius:4px; padding:6px 16px; font-weight:bold; }} QPushButton:hover {{ background:{Theme.accent().lighter(115).name()}; }}")
         save_btn.clicked.connect(self._save)
         btn_row.addWidget(save_btn)
@@ -335,23 +292,12 @@ class SettingsDialog(QDialog):
         dlg = HotkeyDialog()
         if dlg.exec() == QDialog.DialogCode.Accepted:
             hk = dlg.get_hotkey()
-            if hk:
-                self._temp_hotkey = hk
-                self.hk_edit.setText(hk.upper())
-
+            if hk: self._temp_hotkey = hk; self.hk_edit.setText(hk.upper())
     def _browse_bg(self):
-        path, _ = QFileDialog.getOpenFileName(
-            self, "Choose Background Image", "",
-            "Images (*.png *.jpg *.jpeg *.bmp *.gif)")
-        if path:
-            self.bg_edit.setText(str(Path(path)))
-
-    def _clear_bg(self):
-        self.bg_edit.clear()
-
-    def _on_opacity_changed(self, val):
-        self.opacity_pct.setText(f"{val}%")
-
+        path, _ = QFileDialog.getOpenFileName(self, "Choose Background Image", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif)")
+        if path: self.bg_edit.setText(str(Path(path)))
+    def _clear_bg(self): self.bg_edit.clear()
+    def _on_opacity_changed(self, val): self.opacity_pct.setText(f"{val}%")
     def _save(self):
         self.config["hotkey"] = self._temp_hotkey
         self.config["bg_image"] = self.bg_edit.text()
@@ -361,8 +307,6 @@ class SettingsDialog(QDialog):
 
 
 class AboutDialog(QDialog):
-    """关于对话框"""
-
     def __init__(self, parent=None):
         super().__init__(parent)
         t = Theme.current()
@@ -375,13 +319,12 @@ class AboutDialog(QDialog):
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        # ── 内容区 ──
         content = QWidget()
         cl = QVBoxLayout(content)
         cl.setSpacing(14)
         cl.setContentsMargins(32, 24, 32, 24)
 
-        title = QLabel("说 · Shuo")
+        title = QLabel("Shuo")
         title_font = title.font()
         title_font.setPointSize(18)
         title_font.setBold(True)
@@ -414,13 +357,13 @@ class AboutDialog(QDialog):
         cl.addSpacing(4)
 
         deps = [
-            ("qtawesome", "≥1.4.2", "MIT", i18n.tr("about.dep_qtawesome")),
-            ("pynput", "≥1.8.0", "LGPL-3.0", i18n.tr("about.dep_pynput")),
-            ("PyAudio", "≥0.2.14", "MIT", i18n.tr("about.dep_pyaudio")),
-            ("onnxruntime", "≥1.26.0", "MIT", i18n.tr("about.dep_onnx")),
-            ("numpy", "≥2.4.0", "BSD-3", i18n.tr("about.dep_numpy")),
-            ("librosa", "≥0.11.0", "ISC", i18n.tr("about.dep_librosa")),
-            ("tokenizers", "≥0.23.0", "Apache-2.0", i18n.tr("about.dep_tokenizers")),
+            ("qtawesome", ">=0.4.2", "MIT", i18n.tr("about.dep_qtawesome")),
+            ("pynput", ">=1.8.0", "LGPL-3.0", i18n.tr("about.dep_pynput")),
+            ("sounddevice", ">=0.5.0", "MIT", i18n.tr("about.dep_sounddevice")),
+            ("onnxruntime", ">=1.26.0", "MIT", i18n.tr("about.dep_onnx")),
+            ("numpy", ">=1.4.0", "BSD-3", i18n.tr("about.dep_numpy")),
+            ("librosa", ">=0.11.0", "ISC", i18n.tr("about.dep_librosa")),
+            ("tokenizers", ">=0.23.0", "Apache-2.0", i18n.tr("about.dep_tokenizers")),
         ]
 
         grid = QWidget()
@@ -475,15 +418,15 @@ class AboutDialog(QDialog):
 
 
 class LoadingOverlay(QWidget):
-    """半透明遮罩 + 旋转弧线加载动画"""
+    """Semi-transparent overlay with spinner arc animation"""
 
-    _ARC_SPAN = 270 * 16  # 270° 弧长（Qt 使用 1/16° 单位）
-    _TIMER_MS = 16        # ~60 fps
+    _ARC_SPAN = 270 * 16
+    _TIMER_MS = 16
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._angle = 0
-        self._opacity = 0.0  # 淡入用
+        self._opacity = 0.0
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._tick)
@@ -502,14 +445,13 @@ class LoadingOverlay(QWidget):
 
         t = Theme.current()
 
-        # 半透明背景
-        painter.fillRect(self.rect(), QColor(0, 0, 0, int(140 * self._opacity) if Theme.is_dark() else int(60 * self._opacity)))
+        bg_alpha = int(140 * self._opacity) if Theme.is_dark() else int(60 * self._opacity)
+        painter.fillRect(self.rect(), QColor(0, 0, 0, bg_alpha))
 
         cx = self.width() // 2
         cy = self.height() // 2
         spinner_r = 20
 
-        # 旋转弧线（系统强调色）
         accent = Theme.accent()
         pen = QPen(accent, 3.0, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap)
         painter.setPen(pen)
@@ -518,7 +460,6 @@ class LoadingOverlay(QWidget):
                                spinner_r * 2, spinner_r * 2),
                         start_angle, self._ARC_SPAN)
 
-        # 加载文字
         text = i18n.tr("loading.model")
         text_font = QFont(self.font().family(), 11)
         painter.setFont(text_font)
@@ -536,7 +477,7 @@ class LoadingOverlay(QWidget):
 
 
 class ResultItem(QWidget):
-    """卡片式识别结果：左 accent 条 + 文本 + 复制按钮"""
+    """Card-style result: accent bar + text + copy button"""
 
     _RADIUS = 12
     _ACCENT_W = 4
@@ -579,13 +520,11 @@ class ResultItem(QWidget):
             bg = QColor(t["surface"])
             border = QColor(t["border"])
 
-        # 卡片背景
         painter.setPen(QPen(border, 1.0, Qt.PenStyle.SolidLine,
                            Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
         painter.setBrush(bg)
         painter.drawRoundedRect(card, self._RADIUS, self._RADIUS)
 
-        # 左侧 accent 条（hover 时显示）
         if self._hover:
             bar = QRectF(card.left() + 2, card.top() + 8,
                          self._ACCENT_W, card.height() - 16)
@@ -593,12 +532,10 @@ class ResultItem(QWidget):
             painter.setBrush(accent)
             painter.drawRoundedRect(bar, 2, 2)
 
-        # 文本区域 — 始终预留 accent 条宽度，避免 hover 时跳动
         bar_w = self._ACCENT_W + 4
         text_left = card.left() + self._PADDING_H + bar_w
         text_w = card.width() - self._PADDING_H * 2 - bar_w
 
-        # 复制按钮（hover 时显示在右侧）
         if self._hover:
             copy_area_right = card.right() - 8
             copy_area_left = copy_area_right - self._copy_w
@@ -619,7 +556,6 @@ class ResultItem(QWidget):
         else:
             self._copy_rect = None
 
-        # 文本
         text_rect = QRectF(text_left, card.top() + self._PADDING_V,
                            text_w, card.height() - self._PADDING_V * 2)
         painter.setPen(QColor(t["text"]))
@@ -655,7 +591,6 @@ class ResultItem(QWidget):
 
 
 def _icon(name, color=None):
-    """创建图标。默认用主题文字色，可传 color 覆盖（如 '#ffffff'）。"""
     return qta.icon(name, color=color or Theme.current()["text"])
 
 
@@ -685,7 +620,6 @@ class MainWindow(QMainWindow):
         )
         self.resize(700, 500)
         self.setWindowIcon(_icon("fa5s.microphone"))
-        # 居中显示
         screen = QGuiApplication.primaryScreen()
         if screen:
             geo = screen.availableGeometry()
@@ -699,7 +633,6 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(12, 12, 12, 12)
         main_layout.setSpacing(8)
 
-        # 顶部工具栏
         toolbar = QHBoxLayout()
         toolbar.setSpacing(8)
 
@@ -760,7 +693,6 @@ class MainWindow(QMainWindow):
 
         main_layout.addLayout(toolbar)
 
-        # 结果区域
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -794,7 +726,6 @@ class MainWindow(QMainWindow):
         scroll.setWidget(self.result_container)
         main_layout.addWidget(scroll, 1)
 
-        # 底部按钮栏
         btn_container = QHBoxLayout()
         btn_container.setContentsMargins(0, 8, 0, 4)
 
@@ -806,7 +737,6 @@ class MainWindow(QMainWindow):
 
         btn_container.addStretch()
 
-        # 居中：状态标签 + 圆形录音按钮
         center = QVBoxLayout()
         center.setSpacing(6)
         self.status_label = QLabel(i18n.tr("btn.loading"))
@@ -836,16 +766,12 @@ class MainWindow(QMainWindow):
 
         main_layout.addLayout(btn_container)
 
-        # 托盘
         self.setup_tray()
 
-        # 加载历史记录
         self.load_history()
 
-        # 从配置加载热键
         gh.load()
 
-        # 初始化
         self.loader = Loader()
         self.loader.done.connect(self.on_model_loaded)
         self.loader.error.connect(self.on_load_error)
@@ -862,20 +788,16 @@ class MainWindow(QMainWindow):
 
         self._refresh_icons()
 
-        # 监听系统主题切换（Win32 主 + Qt 信号后备）
         self._theme_watcher = _ThemeWatcher()
         self._theme_watcher.changed.connect(self._apply_theme)
         QApplication.instance().installNativeEventFilter(self._theme_watcher)
         QApplication.styleHints().colorSchemeChanged.connect(
             lambda _: QTimer.singleShot(50, self._apply_theme))
 
-        # 首次应用主题
         self._apply_theme()
 
-        # 应用初始窗口透明度
         self.setWindowOpacity(self.config.get("opacity", 100) / 100.0)
 
-        # 设置窗口标题栏深色/浅色
         self.winId()
 
     def setup_tray(self):
@@ -915,18 +837,15 @@ class MainWindow(QMainWindow):
         self.hide()
 
     def _apply_theme(self):
-        """读当前系统主题 → 把显式颜色写到所有需要刷新的组件。"""
         t = Theme.current()
         dark = Theme.is_dark()
 
-        # ── 主窗口背景（同步 repaint 保证立即生效） ──
         cw = self.centralWidget()
         if cw:
             css_parts = [f"background: {t['bg']};"]
             bg_image = self.config.get("bg_image", "")
             if bg_image and Path(bg_image).is_file():
                 bg_fit = self.config.get("bg_fit", "cover")
-                # 相对路径转绝对，统一使用正斜杠
                 img_path = str(Path(bg_image).resolve().as_posix())
                 fit_css = {
                     "cover":   "background-repeat: no-repeat; background-position: center; background-size: cover;",
@@ -939,25 +858,20 @@ class MainWindow(QMainWindow):
             cw.setStyleSheet(f"QWidget#centralWidget {{ {' '.join(css_parts)} }}")
             cw.repaint()
 
-        # ── 录音按钮 ──
         self._apply_btn_styles()
 
-        # ── 标题栏 ──
         _apply_title_bar(self, dark)
 
-        # ── 所有结果卡片立即重绘 ──
         for i in range(self.result_layout.count()):
             w = self.result_layout.itemAt(i).widget()
             if w:
                 w.repaint()
 
-        # ── 图标 ──
         self.setWindowIcon(_icon("fa5s.microphone"))
         self.tray.setIcon(_icon("fa5s.microphone"))
         self._refresh_icons()
 
     def _refresh_icons(self):
-        """刷新工具栏图标颜色"""
         if not hasattr(self, 'settings_btn'):
             return
         self.settings_btn.setIcon(_icon("fa5s.cog"))
@@ -970,7 +884,6 @@ class MainWindow(QMainWindow):
         self._apply_btn_styles()
 
     def _apply_btn_styles(self):
-        """圆形录音按钮 — 系统强调色"""
         accent = Theme.accent()
         t = Theme.current()
         r = 32
@@ -993,7 +906,6 @@ class MainWindow(QMainWindow):
         self.btn.setStyleSheet(style)
 
     def load_history(self):
-        """加载历史记录（最新的在最上面）"""
         items = History.load()
         for item in items:
             text = item.get("text", "")
@@ -1054,7 +966,6 @@ class MainWindow(QMainWindow):
         reply = box.exec()
         if reply == QMessageBox.StandardButton.Yes:
             History.save([])
-            # 清空界面
             while self.result_layout.count() > 1:
                 item = self.result_layout.takeAt(0)
                 if item.widget():
@@ -1113,7 +1024,6 @@ class MainWindow(QMainWindow):
         if self.debounce.isActive():
             self.debounce.stop()
             return
-        # 如果旧录音线程还在跑，强制停掉
         if self.recorder and self.recorder.isRunning():
             self.recorder.stop()
             self.recorder.wait(1000)
@@ -1140,7 +1050,6 @@ class MainWindow(QMainWindow):
             self.btn.setIcon(_icon("fa5s.spinner", "#ffffff"))
 
     def on_recorded(self, path):
-        # 如果正在识别，排队
         if self.worker and self.worker.isRunning():
             self._pending_wavs.append(path)
             n = len(self._pending_wavs)
@@ -1153,7 +1062,6 @@ class MainWindow(QMainWindow):
         self.status_label.setText(i18n.tr("status.transcribing"))
         self.btn.setIcon(_icon("fa5s.spinner", "#ffffff"))
         self.btn.setEnabled(False)
-        # 清理旧 worker
         if self.worker:
             try: self.worker.done.disconnect()
             except Exception: pass
@@ -1176,7 +1084,7 @@ class MainWindow(QMainWindow):
             real = i18n._COMPAT.get(lang, lang)
             if real == "zh" and self.config.get("remove_punc", False):
                 import re
-                _PUNC = '，。！？、；：""\'\'（）【】《》…—,.!?;:\"\'()[]{}<>~·～—'
+                _PUNC = '...,.!?;:()[]{}<>~'
                 text = re.sub('[' + re.escape(_PUNC) + ']', ' ', text)
                 text = re.sub(r'\s+', ' ', text).strip()
             if self.config.get("save_history", False):
@@ -1209,12 +1117,10 @@ class MainWindow(QMainWindow):
             try: Path(self._temp_wav).unlink(missing_ok=True)
             except Exception: pass
             self._temp_wav = None
-        # 清理旧录音线程（已完成则释放）
         if self.recorder and not self.recorder.isRunning():
             self.recorder.wait(500)
             self.recorder.deleteLater()
             self.recorder = None
-        # 清理旧识别线程
         if self.worker and not self.worker.isRunning():
             self.worker.deleteLater()
             self.worker = None
@@ -1235,20 +1141,19 @@ if __name__ == "__main__":
         app = QApplication(sys.argv)
         app.setStyle("windows11")
 
-        # 字体：只设 family + size，不放全局样式表（会破坏原生调色板）
         font = app.font()
         font.setFamilies(["Segoe UI", "Microsoft YaHei", "sans-serif"])
         font.setPointSize(9)
         app.setFont(font)
 
         app.setWindowIcon(_icon("fa5s.microphone"))
-        i18n.load("en")  # 构造 UI 前必须加载，MainWindow 内会按用户配置重新加载
-        logger.info("应用启动")
+        i18n.load("en")
+        logger.info("App started")
         w = MainWindow()
         w.show()
         sys.exit(app.exec())
     except Exception as e:
-        logger.error(f"应用异常退出: {e}")
+        logger.error(f"App exited with error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

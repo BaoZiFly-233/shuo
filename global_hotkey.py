@@ -11,19 +11,18 @@ DEFAULT_HOTKEY = "xbutton1"
 
 _hotkey = DEFAULT_HOTKEY
 _listener = None
-_listener_lock = threading.RLock()  # 可重入锁，避免 start() 调用 stop() 时死锁
+_listener_lock = threading.RLock()
 _on_down = None
 _on_up = None
 _hotkey_active = False
 _last_down = 0.0
-DEBOUNCE_MS = 300  # minimum ms between consecutive hotkey triggers
+DEBOUNCE_MS = 300
 
 def is_admin():
-    """Check if running with administrator privileges on Windows."""
     try:
         return ctypes.windll.shell32.IsUserAnAdmin() != 0
     except Exception:
-        return True  # non-Windows or can't check — assume OK
+        return True
 
 def load():
     global _hotkey
@@ -38,7 +37,6 @@ def save(hotkey=None):
     if hotkey:
         global _hotkey
         _hotkey = hotkey
-    # 读取已有配置，合并后写回（避免覆盖其他字段）
     cfg = {}
     if CONFIG_PATH.exists():
         try:
@@ -53,7 +51,7 @@ def get():
     return _hotkey
 
 def start(on_down=None, on_up=None):
-    global _listener, _on_down, _on_up, _hotkey_active
+    global _listener, _on_down, _on_up, _hotkey_active, _last_down
     _on_down = on_down
     _on_up = on_up
     _hotkey_active = False
@@ -65,9 +63,8 @@ def start(on_down=None, on_up=None):
 
     with _listener_lock:
         stop()
-        time.sleep(0.05)  # let Windows hook subsystem settle
+        time.sleep(0.05)
 
-        # Warn if not running as admin (global hooks may fail for elevated windows)
         if not is_admin():
             _log.warning("Not running as administrator — hotkey may not work "
                          "in elevated windows (Task Manager, UAC prompts, etc.)")
@@ -149,5 +146,5 @@ def stop():
         if _listener:
             for l in _listener:
                 l.stop()
-                l.join(timeout=2.0)  # wait for thread to actually exit
+                l.join(timeout=2.0)
             _listener = None
