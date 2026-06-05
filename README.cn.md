@@ -8,7 +8,10 @@
 ├── docs/                       # 文档
 ├── locales/                    # 翻译文件
 ├── Qwen3-ASR-0.6B-ONNX-CPU/    # ASR 模型（需先下载）
-├── asr_gui.py                  # 语音识别 GUI
+├── asr_gui.py                  # 语音识别 GUI 主程序
+├── theme.py                    # 主题管理（亮/暗色 + 背景图）
+├── config.py                   # 配置 / 历史 / 日志
+├── global_hotkey.py            # 全局热键监听 (pynput)
 ├── benchmark.py                # 性能测试
 ├── extract_i18n.py             # 提取翻译键
 ├── i18n.py                     # 国际化模块
@@ -38,11 +41,12 @@ pip install -r requirements.txt
 | PySide6 | GUI 框架 |
 | qtawesome | Font Awesome 图标 |
 | pynput | 全局热键监听 |
-| PyAudio | 音频录制 |
+| sounddevice | 音频录制 |
 | onnxruntime | ONNX 模型推理 |
 | numpy | 数值计算 |
 | librosa | 音频处理 / Mel 频谱 |
 | tokenizers | 文本分词 |
+| transformers | 分词器加载 |
 
 ## 启动 GUI
 
@@ -60,8 +64,8 @@ python asr_gui.py
 | `history.json` | 识别历史（最多 500 条） |
 | `shuo.log` | 运行日志（UTF-8） |
 
-- 默认快捷键：鼠标侧键（后退），可在左上角「快捷键」按钮自定义
-- 右上角下拉框切换中文 / English
+- 默认快捷键：F2，可在设置中自定义
+- 支持设置窗口透明度（10%-100%）和背景图片
 
 ## 打包
 
@@ -69,17 +73,13 @@ python asr_gui.py
 pip install pyinstaller
 
 # Windows（CMD，分号分隔）
-pyinstaller --windowed --name Shuo --icon=shuo.ico -y --add-data "locales;locales" --add-data "Qwen3-ASR-0.6B-ONNX-CPU;Qwen3-ASR-0.6B-ONNX-CPU" --add-data "mel_filters.npy;." --hidden-import onnxruntime --hidden-import tokenizers --exclude-module torch --exclude-module sklearn --exclude-module tensorflow asr_gui.py
+pyinstaller --windowed --name Shuo --icon=shuo.ico -y --add-data "locales;locales" --add-data "Qwen3-ASR-0.6B-ONNX-CPU;Qwen3-ASR-0.6B-ONNX-CPU" --add-data "mel_filters.npy;." --add-data "theme.py;." --add-data "config.py;." --hidden-import onnxruntime --hidden-import tokenizers --hidden-import transformers --hidden-import sounddevice --hidden-import numpy --exclude-module torch --exclude-module sklearn --exclude-module tensorflow asr_gui.py
 
 # macOS / Linux（冒号分隔）
-pyinstaller --windowed --name Shuo --icon=shuo.ico -y --add-data "locales:locales" --add-data "Qwen3-ASR-0.6B-ONNX-CPU:Qwen3-ASR-0.6B-ONNX-CPU" --add-data "mel_filters.npy:." --hidden-import onnxruntime --hidden-import tokenizers --exclude-module torch --exclude-module sklearn --exclude-module tensorflow asr_gui.py
+pyinstaller --windowed --name Shuo --icon=shuo.ico -y --add-data "locales:locales" --add-data "Qwen3-ASR-0.6B-ONNX-CPU:Qwen3-ASR-0.6B-ONNX-CPU" --add-data "mel_filters.npy:." --add-data "theme.py:." --add-data "config.py:." --hidden-import onnxruntime --hidden-import tokenizers --hidden-import transformers --hidden-import sounddevice --hidden-import numpy --exclude-module torch --exclude-module sklearn --exclude-module tensorflow asr_gui.py
 ```
 
-输出：`dist/Shuo/`（约 3 GB，含 ONNX 模型 + scipy）
-  asr_gui.py
-```
-
-输出：`dist/Shuo.exe`（含模型约 500MB+）
+输出：`dist/Shuo/`（约 3 GB，含 ONNX 模型）
 
 ## 国际化
 
@@ -104,7 +104,7 @@ python extract_i18n.py
 |---|---|
 | qtawesome | MIT |
 | pynput | LGPL-3.0 |
-| PyAudio | MIT |
+| sounddevice | MIT |
 | onnxruntime | MIT |
 | numpy | BSD-3 |
 | librosa | ISC |
