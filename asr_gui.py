@@ -3,7 +3,8 @@ from pathlib import Path
 from datetime import datetime
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
     QPushButton, QLabel, QComboBox, QHBoxLayout, QDialog, QCheckBox,
-    QSystemTrayIcon, QMenu, QScrollArea, QSizePolicy, QGridLayout)
+    QSystemTrayIcon, QMenu, QScrollArea, QSizePolicy, QGridLayout,
+    QFileDialog, QSlider, QLineEdit)
 from PySide6.QtCore import (QThread, Signal, QTimer, Qt, QSize, QRect, QRectF,
     QPointF, QObject, QAbstractNativeEventFilter)
 from PySide6.QtGui import QGuiApplication, QColor, QPainter, QFont, QPalette, QAction, QPen, QFontMetrics
@@ -154,7 +155,10 @@ DEFAULT_CONFIG = {
     "asr_lang": "auto",
     "auto_type": True,
     "remove_punc": False,
-    "save_history": False
+    "save_history": False,
+    "bg_image": "",
+    "bg_fit": "cover",
+    "opacity": 100,
 }
 
 
@@ -355,6 +359,157 @@ class HotkeyDialog(QDialog):
         self._ml.stop()
         self._kl.stop()
         super().closeEvent(e)
+
+
+class SettingsDialog(QDialog):
+    """设置对话框：热键、背景图片、透明度"""
+
+    def __init__(self, config, parent=None):
+        super().__init__(parent)
+        self.config = config
+        self._temp_hotkey = config.get("hotkey", "f2")
+        t = Theme.current()
+
+        self.setWindowTitle("Settings")
+        self.setWindowIcon(_icon("fa5s.microphone"))
+        self.setMinimumWidth(440)
+        self.setStyleSheet(f"SettingsDialog {{ background:{t['bg']}; }}")
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+        layout.setContentsMargins(20, 16, 20, 16)
+
+        # ── 热键 ──
+        hk_label = QLabel(i18n.tr("settings.hotkey"))
+        hk_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        layout.addWidget(hk_label)
+
+        hk_row = QHBoxLayout()
+        self.hk_edit = QLineEdit(self._temp_hotkey.upper())
+        self.hk_edit.setReadOnly(True)
+        self.hk_edit.setFixedWidth(140)
+        self.hk_edit.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px 8px;")
+        hk_row.addWidget(self.hk_edit)
+        change_btn = QPushButton("Change")
+        change_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        change_btn.clicked.connect(self._change_hotkey)
+        hk_row.addWidget(change_btn)
+        hk_row.addStretch()
+        layout.addLayout(hk_row)
+
+        # ── 分隔线 ──
+        sep1 = QWidget()
+        sep1.setFixedHeight(1)
+        sep1.setStyleSheet(f"background:{t['border']};")
+        layout.addWidget(sep1)
+
+        # ── 背景图片 ──
+        bg_label = QLabel("Background Image")
+        bg_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        layout.addWidget(bg_label)
+
+        bg_row = QHBoxLayout()
+        self.bg_edit = QLineEdit(config.get("bg_image", ""))
+        self.bg_edit.setReadOnly(True)
+        self.bg_edit.setPlaceholderText("(none — uses theme color)")
+        self.bg_edit.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px 8px;")
+        bg_row.addWidget(self.bg_edit)
+        browse_btn = QPushButton("...")
+        browse_btn.setFixedWidth(36)
+        browse_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        browse_btn.clicked.connect(self._browse_bg)
+        bg_row.addWidget(browse_btn)
+        clear_btn = QPushButton(_icon("fa5s.times"), "")
+        clear_btn.setFixedWidth(36)
+        clear_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        clear_btn.clicked.connect(self._clear_bg)
+        bg_row.addWidget(clear_btn)
+        layout.addLayout(bg_row)
+
+        # ── 填充模式 ──
+        fit_label = QLabel("Fit Mode")
+        fit_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        layout.addWidget(fit_label)
+
+        self.fit_box = QComboBox()
+        self.fit_box.addItems(["Cover", "Contain", "Tile", "Center"])
+        cur_fit = config.get("bg_fit", "cover").capitalize()
+        for i in range(self.fit_box.count()):
+            if self.fit_box.itemText(i).lower() == cur_fit.lower():
+                self.fit_box.setCurrentIndex(i)
+                break
+        self.fit_box.setStyleSheet(f"color:{t['text']}; background:{t['surface']}; border:1px solid {t['border']}; padding:4px;")
+        layout.addWidget(self.fit_box)
+
+        # ── 分隔线 ──
+        sep2 = QWidget()
+        sep2.setFixedHeight(1)
+        sep2.setStyleSheet(f"background:{t['border']};")
+        layout.addWidget(sep2)
+
+        # ── 透明度 ──
+        opacity_label = QLabel("Window Opacity")
+        opacity_label.setStyleSheet(f"font-weight:bold; color:{t['text']};")
+        layout.addWidget(opacity_label)
+
+        opacity_row = QHBoxLayout()
+        self.opacity_slider = QSlider(Qt.Orientation.Horizontal)
+        self.opacity_slider.setRange(10, 100)
+        self.opacity_slider.setValue(config.get("opacity", 100))
+        self.opacity_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
+        self.opacity_slider.setTickInterval(10)
+        self.opacity_slider.valueChanged.connect(self._on_opacity_changed)
+        opacity_row.addWidget(self.opacity_slider)
+        self.opacity_pct = QLabel(f"{self.opacity_slider.value()}%")
+        self.opacity_pct.setFixedWidth(40)
+        self.opacity_pct.setStyleSheet(f"color:{t['text']};")
+        self.opacity_pct.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        opacity_row.addWidget(self.opacity_pct)
+        layout.addLayout(opacity_row)
+
+        layout.addStretch()
+
+        # ── 按钮栏 ──
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        cancel_btn = QPushButton(i18n.tr("btn.cancel"))
+        cancel_btn.setFixedWidth(90)
+        cancel_btn.clicked.connect(self.reject)
+        btn_row.addWidget(cancel_btn)
+        save_btn = QPushButton("Save")
+        save_btn.setFixedWidth(90)
+        save_btn.setStyleSheet(f"QPushButton {{ background:{Theme.accent().name()}; color:#ffffff; border:none; border-radius:4px; padding:6px 16px; font-weight:bold; }} QPushButton:hover {{ background:{Theme.accent().lighter(115).name()}; }}")
+        save_btn.clicked.connect(self._save)
+        btn_row.addWidget(save_btn)
+        layout.addLayout(btn_row)
+
+    def _change_hotkey(self):
+        dlg = HotkeyDialog()
+        if dlg.exec() == QDialog.DialogCode.Accepted:
+            hk = dlg.get_hotkey()
+            if hk:
+                self._temp_hotkey = hk
+                self.hk_edit.setText(hk.upper())
+
+    def _browse_bg(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Choose Background Image", "",
+            "Images (*.png *.jpg *.jpeg *.bmp *.gif)")
+        if path:
+            self.bg_edit.setText(str(Path(path)))
+
+    def _clear_bg(self):
+        self.bg_edit.clear()
+
+    def _on_opacity_changed(self, val):
+        self.opacity_pct.setText(f"{val}%")
+
+    def _save(self):
+        self.config["hotkey"] = self._temp_hotkey
+        self.config["bg_image"] = self.bg_edit.text()
+        self.config["bg_fit"] = self.fit_box.currentText().lower()
+        self.config["opacity"] = self.opacity_slider.value()
+        self.accept()
 
 
 class AboutDialog(QDialog):
@@ -700,7 +855,7 @@ class MainWindow(QMainWindow):
         toolbar = QHBoxLayout()
         toolbar.setSpacing(8)
 
-        self.settings_btn = QPushButton(_icon("fa5s.keyboard"), f"  {i18n.tr('btn.settings')}")
+        self.settings_btn = QPushButton(_icon("fa5s.cog"), f"  {i18n.tr('btn.settings')}")
         self.settings_btn.clicked.connect(self.open_settings)
         toolbar.addWidget(self.settings_btn)
 
@@ -869,6 +1024,9 @@ class MainWindow(QMainWindow):
         # 首次应用主题
         self._apply_theme()
 
+        # 应用初始窗口透明度
+        self.setWindowOpacity(self.config.get("opacity", 100) / 100.0)
+
         # 设置窗口标题栏深色/浅色
         self.winId()
 
@@ -916,7 +1074,21 @@ class MainWindow(QMainWindow):
         # ── 主窗口背景（同步 repaint 保证立即生效） ──
         cw = self.centralWidget()
         if cw:
-            cw.setStyleSheet(f"QWidget#centralWidget {{ background: {t['bg']}; }}")
+            css_parts = [f"background: {t['bg']};"]
+            bg_image = self.config.get("bg_image", "")
+            if bg_image and Path(bg_image).is_file():
+                bg_fit = self.config.get("bg_fit", "cover")
+                # 相对路径转绝对，统一使用正斜杠
+                img_path = str(Path(bg_image).resolve().as_posix())
+                fit_css = {
+                    "cover":   "background-repeat: no-repeat; background-position: center; background-size: cover;",
+                    "contain": "background-repeat: no-repeat; background-position: center; background-size: contain;",
+                    "tile":    "background-repeat: repeat;",
+                    "center":  "background-repeat: no-repeat; background-position: center;",
+                }.get(bg_fit, "background-size: cover; background-position: center; background-repeat: no-repeat;")
+                css_parts.append(fit_css)
+                css_parts.append(f"background-image: url('{img_path}');")
+            cw.setStyleSheet(f"QWidget#centralWidget {{ {' '.join(css_parts)} }}")
             cw.repaint()
 
         # ── 录音按钮 ──
@@ -940,7 +1112,7 @@ class MainWindow(QMainWindow):
         """刷新工具栏图标颜色"""
         if not hasattr(self, 'settings_btn'):
             return
-        self.settings_btn.setIcon(_icon("fa5s.keyboard"))
+        self.settings_btn.setIcon(_icon("fa5s.cog"))
         self.clear_btn.setIcon(_icon("fa5s.trash"))
         self.exit_btn.setIcon(_icon("fa5s.sign-out-alt"))
         self.about_btn.setIcon(_icon("fa5s.info-circle"))
@@ -987,13 +1159,12 @@ class MainWindow(QMainWindow):
 
     def open_settings(self):
         gh.stop()
-        dlg = HotkeyDialog()
+        dlg = SettingsDialog(self.config, self)
         if dlg.exec() == QDialog.DialogCode.Accepted:
-            hk = dlg.get_hotkey()
-            if hk:
-                self.config["hotkey"] = hk
-                Config.save(self.config)
-                gh.save(hk)
+            Config.save(self.config)
+            gh.save(self.config.get("hotkey", "f2"))
+            self.setWindowOpacity(self.config.get("opacity", 100) / 100.0)
+            self._apply_theme()
         gh.start(on_down=self.hotkey_pressed.emit, on_up=self.hotkey_released.emit)
         self.update_hint()
 
