@@ -1,0 +1,12 @@
+Acknowledgements
+================
+
+This project uses Qwen3-ASR-0.6B ONNX CPU pipeline by Daumee.
+
+- Original model: Qwen3-ASR-0.6B by Qwen Team (https://huggingface.co/Qwen/Qwen3-ASR-0.6B)
+- Official repo: https://github.com/QwenLM/Qwen3-ASR
+- Technical report: https://arxiv.org/abs/2601.21337
+- ONNX export reference: https://github.com/andrewleech/qwen3-asr-onnx
+- Pre-built ONNX pipeline: https://huggingface.co/Daumee/Qwen3-ASR-0.6B-ONNX-CPU
+
+Model weights license: https://huggingface.co/Qwen/Qwen3-ASR-0.6B

@@ -1,0 +1,19 @@
+# Model files (~2.5GB, re-downloadable)
+Qwen3-ASR-0.6B-ONNX-CPU/
+
+# Build artifacts
+build/
+dist/
+*.spec
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
