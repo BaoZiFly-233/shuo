@@ -26,7 +26,7 @@
     "about.col_use": "Mục đích",
     "about.dep_qtawesome": "Biểu tượng Font Awesome",
     "about.dep_pynput": "Trình nghe phím tắt toàn cục",
-    "about.dep_pyaudio": "Ghi âm",
+    "about.dep_sounddevice": "Ghi âm",
     "about.dep_onnx": "Suy luận mô hình ONNX",
     "about.dep_numpy": "Tính toán số",
     "about.dep_librosa": "Xử lý âm thanh",

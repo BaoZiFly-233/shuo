@@ -26,7 +26,7 @@
     "about.col_use": "الغرض",
     "about.dep_qtawesome": "أيقونات Font Awesome",
     "about.dep_pynput": "مستمع اختصارات عالمي",
-    "about.dep_pyaudio": "تسجيل صوتي",
+    "about.dep_sounddevice": "تسجيل صوتي",
     "about.dep_onnx": "استدلال نموذج ONNX",
     "about.dep_numpy": "حسابات رقمية",
     "about.dep_librosa": "معالجة صوتية",

@@ -26,7 +26,7 @@
     "about.col_use": "Finalidade",
     "about.dep_qtawesome": "Ícones Font Awesome",
     "about.dep_pynput": "Ouvinte de atalhos globais",
-    "about.dep_pyaudio": "Gravação de áudio",
+    "about.dep_sounddevice": "Gravação de áudio",
     "about.dep_onnx": "Inferência de modelo ONNX",
     "about.dep_numpy": "Computação numérica",
     "about.dep_librosa": "Processamento de áudio",

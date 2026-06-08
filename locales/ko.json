@@ -26,7 +26,7 @@
     "about.col_use": "용도",
     "about.dep_qtawesome": "Font Awesome 아이콘",
     "about.dep_pynput": "글로벌 단축키 리스너",
-    "about.dep_pyaudio": "오디오 녹음",
+    "about.dep_sounddevice": "오디오 녹음",
     "about.dep_onnx": "ONNX 모델 추론",
     "about.dep_numpy": "수치 계산",
     "about.dep_librosa": "오디오 처리",

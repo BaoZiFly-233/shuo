@@ -26,7 +26,7 @@
     "about.col_use": "Назначение",
     "about.dep_qtawesome": "Иконки Font Awesome",
     "about.dep_pynput": "Глобальный прослушиватель горячих клавиш",
-    "about.dep_pyaudio": "Запись аудио",
+    "about.dep_sounddevice": "Запись аудио",
     "about.dep_onnx": "Инференс ONNX-модели",
     "about.dep_numpy": "Числовые вычисления",
     "about.dep_librosa": "Обработка аудио",

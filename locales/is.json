@@ -26,7 +26,7 @@
     "about.col_use": "Tilgangur",
     "about.dep_qtawesome": "Font Awesome tákn",
     "about.dep_pynput": "Hlustun flýtileiða",
-    "about.dep_pyaudio": "Hljóðupptaka",
+    "about.dep_sounddevice": "Hljóðupptaka",
     "about.dep_onnx": "ONNX módel ályktun",
     "about.dep_numpy": "Töluleg útreikningur",
     "about.dep_librosa": "Hljóðvinnsla",

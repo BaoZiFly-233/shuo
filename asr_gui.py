@@ -18,12 +18,15 @@ user32 = ctypes.windll.user32
 
 def send_paste():
     import time
-    user32.keybd_event(_VK_CODE["LCONTROL"], 0, 0, 0)
-    time.sleep(0.03)
-    user32.keybd_event(_VK_CODE["V"], 0, 0, 0)
-    time.sleep(0.03)
-    user32.keybd_event(_VK_CODE["V"], 0, 2, 0)
-    user32.keybd_event(_VK_CODE["LCONTROL"], 0, 2, 0)
+    try:
+        user32.keybd_event(_VK_CODE["LCONTROL"], 0, 0, 0)
+        time.sleep(0.05)
+        user32.keybd_event(_VK_CODE["V"], 0, 0, 0)
+        time.sleep(0.05)
+        user32.keybd_event(_VK_CODE["V"], 0, 2, 0)
+        user32.keybd_event(_VK_CODE["LCONTROL"], 0, 2, 0)
+    except Exception:
+        pass
 
 import i18n
 import global_hotkey as gh
@@ -191,10 +194,15 @@ class HotkeyDialog(QDialog):
             self._capture_signal.emit("+".join(parts))
             return False
 
-        self._ml = mouse.Listener(on_click=on_click, suppress=True)
-        self._kl = kb.Listener(on_press=on_press, suppress=True)
+        self._ml = mouse.Listener(on_click=on_click)
+        self._kl = kb.Listener(on_press=on_press)
         self._ml.start()
         self._kl.start()
+        # safety timer: auto-close after 30s to prevent stuck listeners
+        self._safety = QTimer(self)
+        self._safety.setSingleShot(True)
+        self._safety.timeout.connect(self.reject)
+        self._safety.start(30000)
 
     def _on_captured(self, hotkey):
         self._captured = hotkey
@@ -661,8 +669,10 @@ class MainWindow(QMainWindow):
         self.setWindowFlags(
             Qt.WindowType.Window |
             Qt.WindowType.WindowMinimizeButtonHint |
+            Qt.WindowType.WindowMaximizeButtonHint |
             Qt.WindowType.WindowCloseButtonHint
         )
+        self.setMinimumSize(500, 350)
         self.resize(700, 500)
         self.setWindowIcon(_icon("fa5s.microphone"))
         screen = QGuiApplication.primaryScreen()
@@ -841,6 +851,7 @@ class MainWindow(QMainWindow):
 
         self._apply_theme()
 
+        self.setWindowTitle(i18n.tr("app.title"))
         self.winId()
 
     def setup_tray(self):
@@ -885,6 +896,11 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         event.ignore()
         self.hide()
+        if self.tray.supportsMessages():
+            self.tray.showMessage(
+                i18n.tr("app.title"),
+                i18n.tr("tray.still_running"),
+                QSystemTrayIcon.MessageIcon.Information, 3000)
 
     def _apply_theme(self):
         t = Theme.current()
@@ -1078,6 +1094,10 @@ class MainWindow(QMainWindow):
 
     def on_load_error(self, msg):
         self.overlay.hide()
+        self.status_label.setText(i18n.tr("status.load_failed"))
+        from PySide6.QtWidgets import QMessageBox
+        QMessageBox.critical(self, i18n.tr("app.title"),
+            i18n.tr("status.load_error_msg").format(error=msg))
 
     def on_press(self):
         if self.debounce.isActive():

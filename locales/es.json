@@ -26,7 +26,7 @@
     "about.col_use": "Propósito",
     "about.dep_qtawesome": "Iconos Font Awesome",
     "about.dep_pynput": "Escuchador de atajos globales",
-    "about.dep_pyaudio": "Grabación de audio",
+    "about.dep_sounddevice": "Grabación de audio",
     "about.dep_onnx": "Inferencia de modelo ONNX",
     "about.dep_numpy": "Cálculo numérico",
     "about.dep_librosa": "Procesamiento de audio",

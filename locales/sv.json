@@ -26,7 +26,7 @@
     "about.col_use": "Syfte",
     "about.dep_qtawesome": "Font Awesome-ikoner",
     "about.dep_pynput": "Global genvägslyssnare",
-    "about.dep_pyaudio": "Ljudinspelning",
+    "about.dep_sounddevice": "Ljudinspelning",
     "about.dep_onnx": "ONNX modellinferens",
     "about.dep_numpy": "Numerisk beräkning",
     "about.dep_librosa": "Ljudbehandling",

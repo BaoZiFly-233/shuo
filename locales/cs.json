@@ -26,7 +26,7 @@
     "about.col_use": "Účel",
     "about.dep_qtawesome": "Ikony Font Awesome",
     "about.dep_pynput": "Globální posluchač zkratek",
-    "about.dep_pyaudio": "Nahrávání zvuku",
+    "about.dep_sounddevice": "Nahrávání zvuku",
     "about.dep_onnx": "Inference ONNX modelu",
     "about.dep_numpy": "Numerické výpočty",
     "about.dep_librosa": "Zpracování zvuku",

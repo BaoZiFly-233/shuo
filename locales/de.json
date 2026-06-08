@@ -26,7 +26,7 @@
     "about.col_use": "Zweck",
     "about.dep_qtawesome": "Font Awesome Symbole",
     "about.dep_pynput": "Globaler Hotkey-Listener",
-    "about.dep_pyaudio": "Audioaufnahme",
+    "about.dep_sounddevice": "Audioaufnahme",
     "about.dep_onnx": "ONNX-Modellinferenz",
     "about.dep_numpy": "Numerische Berechnung",
     "about.dep_librosa": "Audioverarbeitung",

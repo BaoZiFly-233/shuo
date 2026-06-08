@@ -26,7 +26,7 @@
     "about.col_use": "Formål",
     "about.dep_qtawesome": "Font Awesome-ikoner",
     "about.dep_pynput": "Global snarveilytter",
-    "about.dep_pyaudio": "Lydopptak",
+    "about.dep_sounddevice": "Lydopptak",
     "about.dep_onnx": "ONNX modellinferens",
     "about.dep_numpy": "Numerisk beregning",
     "about.dep_librosa": "Lydbearbeiding",

@@ -26,7 +26,7 @@
     "about.col_use": "Scopo",
     "about.dep_qtawesome": "Icone Font Awesome",
     "about.dep_pynput": "Listener scorciatoie globali",
-    "about.dep_pyaudio": "Registrazione audio",
+    "about.dep_sounddevice": "Registrazione audio",
     "about.dep_onnx": "Inferenza modello ONNX",
     "about.dep_numpy": "Calcolo numerico",
     "about.dep_librosa": "Elaborazione audio",

@@ -26,7 +26,7 @@
     "about.col_use": "Layunin",
     "about.dep_qtawesome": "Font Awesome icons",
     "about.dep_pynput": "Global na tagapakinig ng shortcut",
-    "about.dep_pyaudio": "Pag-record ng audio",
+    "about.dep_sounddevice": "Pag-record ng audio",
     "about.dep_onnx": "ONNX model inference",
     "about.dep_numpy": "Numerikal na computing",
     "about.dep_librosa": "Audio processing",

@@ -26,7 +26,7 @@
     "about.col_use": "用途",
     "about.dep_qtawesome": "Font Awesome アイコン",
     "about.dep_pynput": "グローバルホットキー監視",
-    "about.dep_pyaudio": "音声録音",
+    "about.dep_sounddevice": "音声録音",
     "about.dep_onnx": "ONNX モデル推論",
     "about.dep_numpy": "数値計算",
     "about.dep_librosa": "音声処理",

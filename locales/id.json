@@ -26,7 +26,7 @@
     "about.col_use": "Kegunaan",
     "about.dep_qtawesome": "Ikon Font Awesome",
     "about.dep_pynput": "Pendengar pintasan global",
-    "about.dep_pyaudio": "Perekaman audio",
+    "about.dep_sounddevice": "Perekaman audio",
     "about.dep_onnx": "Inferensi model ONNX",
     "about.dep_numpy": "Komputasi numerik",
     "about.dep_librosa": "Pemrosesan audio",

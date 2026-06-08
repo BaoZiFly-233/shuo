@@ -26,7 +26,7 @@
     "about.col_use": "Käyttötarkoitus",
     "about.dep_qtawesome": "Font Awesome -kuvakkeet",
     "about.dep_pynput": "Globaali pikanäppäinkuuntelija",
-    "about.dep_pyaudio": "Äänitys",
+    "about.dep_sounddevice": "Äänitys",
     "about.dep_onnx": "ONNX-mallipäättely",
     "about.dep_numpy": "Numeerinen laskenta",
     "about.dep_librosa": "Äänenkäsittely",

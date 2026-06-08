@@ -26,7 +26,7 @@
     "about.col_use": "วัตถุประสงค์",
     "about.dep_qtawesome": "ไอคอน Font Awesome",
     "about.dep_pynput": "ตัวฟังทางลัดระดับโลก",
-    "about.dep_pyaudio": "การบันทึกเสียง",
+    "about.dep_sounddevice": "การบันทึกเสียง",
     "about.dep_onnx": "การอนุมานโมเดล ONNX",
     "about.dep_numpy": "การคำนวณตัวเลข",
     "about.dep_librosa": "การประมวลผลเสียง",

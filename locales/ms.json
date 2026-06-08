@@ -26,7 +26,7 @@
     "about.col_use": "Tujuan",
     "about.dep_qtawesome": "Ikon Font Awesome",
     "about.dep_pynput": "Pendengar pintasan global",
-    "about.dep_pyaudio": "Rakaman audio",
+    "about.dep_sounddevice": "Rakaman audio",
     "about.dep_onnx": "Inferens model ONNX",
     "about.dep_numpy": "Pengiraan berangka",
     "about.dep_librosa": "Pemprosesan audio",

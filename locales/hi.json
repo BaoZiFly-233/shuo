@@ -26,7 +26,7 @@
     "about.col_use": "उद्देश्य",
     "about.dep_qtawesome": "Font Awesome आइकन",
     "about.dep_pynput": "ग्लोबल शॉर्टकट लिसनर",
-    "about.dep_pyaudio": "ऑडियो रिकॉर्डिंग",
+    "about.dep_sounddevice": "ऑडियो रिकॉर्डिंग",
     "about.dep_onnx": "ONNX मॉडल इंफ़रेंस",
     "about.dep_numpy": "संख्यात्मक गणना",
     "about.dep_librosa": "ऑडियो प्रोसेसिंग",

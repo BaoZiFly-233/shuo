@@ -26,7 +26,7 @@
     "about.col_use": "Przeznaczenie",
     "about.dep_qtawesome": "Ikony Font Awesome",
     "about.dep_pynput": "Globalny nasłuch skrótów",
-    "about.dep_pyaudio": "Nagrywanie dźwięku",
+    "about.dep_sounddevice": "Nagrywanie dźwięku",
     "about.dep_onnx": "Inferencja modelu ONNX",
     "about.dep_numpy": "Obliczenia numeryczne",
     "about.dep_librosa": "Przetwarzanie dźwięku",

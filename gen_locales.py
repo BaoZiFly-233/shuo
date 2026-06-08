@@ -73,7 +73,7 @@ UI = {
     "about.title":"About",
     "about.subtitle":"Qwen3 ASR Speech Recognition",
     "about.col_lib":"Library","about.col_ver":"Version","about.col_lic":"License","about.col_use":"Purpose",
-    "about.dep_qtawesome":"Font Awesome icons","about.dep_pynput":"Global hotkey listener","about.dep_pyaudio":"Audio recording","about.dep_onnx":"ONNX model inference","about.dep_numpy":"Numerical computing","about.dep_librosa":"Audio processing","about.dep_tokenizers":"Text tokenization",
+    "about.dep_qtawesome":"Font Awesome icons","about.dep_pynput":"Global hotkey listener","about.dep_sounddevice":"Audio recording","about.dep_onnx":"ONNX model inference","about.dep_numpy":"Numerical computing","about.dep_librosa":"Audio processing","about.dep_tokenizers":"Text tokenization",
 },
 "zh": {
     "app.title":"语音识别",
@@ -98,7 +98,7 @@ UI = {
     "about.title":"关于",
     "about.subtitle":"Qwen3 ASR 语音识别工具",
     "about.col_lib":"库","about.col_ver":"版本","about.col_lic":"协议","about.col_use":"用途",
-    "about.dep_qtawesome":"Font Awesome 图标","about.dep_pynput":"全局热键监听","about.dep_pyaudio":"音频录制","about.dep_onnx":"ONNX 模型推理","about.dep_numpy":"数值计算","about.dep_librosa":"音频处理","about.dep_tokenizers":"文本分词",
+    "about.dep_qtawesome":"Font Awesome 图标","about.dep_pynput":"全局热键监听","about.dep_sounddevice":"音频录制","about.dep_onnx":"ONNX 模型推理","about.dep_numpy":"数值计算","about.dep_librosa":"音频处理","about.dep_tokenizers":"文本分词",
 },
 "yue": {
     "app.title":"語音識別",
@@ -123,7 +123,7 @@ UI = {
     "about.title":"關於",
     "about.subtitle":"Qwen3 ASR 語音識別工具",
     "about.col_lib":"庫","about.col_ver":"版本","about.col_lic":"協議","about.col_use":"用途",
-    "about.dep_qtawesome":"Font Awesome 圖標","about.dep_pynput":"全域熱鍵監聽","about.dep_pyaudio":"音頻錄製","about.dep_onnx":"ONNX 模型推理","about.dep_numpy":"數值計算","about.dep_librosa":"音頻處理","about.dep_tokenizers":"文本分詞",
+    "about.dep_qtawesome":"Font Awesome 圖標","about.dep_pynput":"全域熱鍵監聽","about.dep_sounddevice":"音頻錄製","about.dep_onnx":"ONNX 模型推理","about.dep_numpy":"數值計算","about.dep_librosa":"音頻處理","about.dep_tokenizers":"文本分詞",
 },
 "ja": {
     "app.title":"音声認識",
@@ -148,7 +148,7 @@ UI = {
     "about.title":"概要",
     "about.subtitle":"Qwen3 ASR 音声認識ツール",
     "about.col_lib":"ライブラリ","about.col_ver":"バージョン","about.col_lic":"ライセンス","about.col_use":"用途",
-    "about.dep_qtawesome":"Font Awesome アイコン","about.dep_pynput":"グローバルホットキー監視","about.dep_pyaudio":"音声録音","about.dep_onnx":"ONNX モデル推論","about.dep_numpy":"数値計算","about.dep_librosa":"音声処理","about.dep_tokenizers":"テキストトークン化",
+    "about.dep_qtawesome":"Font Awesome アイコン","about.dep_pynput":"グローバルホットキー監視","about.dep_sounddevice":"音声録音","about.dep_onnx":"ONNX モデル推論","about.dep_numpy":"数値計算","about.dep_librosa":"音声処理","about.dep_tokenizers":"テキストトークン化",
 },
 "de": {
     "app.title":"Spracherkennung",
@@ -173,7 +173,7 @@ UI = {
     "about.title":"Über",
     "about.subtitle":"Qwen3 ASR Spracherkennungstool",
     "about.col_lib":"Bibliothek","about.col_ver":"Version","about.col_lic":"Lizenz","about.col_use":"Zweck",
-    "about.dep_qtawesome":"Font Awesome Symbole","about.dep_pynput":"Globaler Hotkey-Listener","about.dep_pyaudio":"Audioaufnahme","about.dep_onnx":"ONNX-Modellinferenz","about.dep_numpy":"Numerische Berechnung","about.dep_librosa":"Audioverarbeitung","about.dep_tokenizers":"Text-Tokenisierung",
+    "about.dep_qtawesome":"Font Awesome Symbole","about.dep_pynput":"Globaler Hotkey-Listener","about.dep_sounddevice":"Audioaufnahme","about.dep_onnx":"ONNX-Modellinferenz","about.dep_numpy":"Numerische Berechnung","about.dep_librosa":"Audioverarbeitung","about.dep_tokenizers":"Text-Tokenisierung",
 },
 "ko": {
     "app.title":"음성 인식",
@@ -198,7 +198,7 @@ UI = {
     "about.title":"정보",
     "about.subtitle":"Qwen3 ASR 음성 인식 도구",
     "about.col_lib":"라이브러리","about.col_ver":"버전","about.col_lic":"라이선스","about.col_use":"용도",
-    "about.dep_qtawesome":"Font Awesome 아이콘","about.dep_pynput":"글로벌 단축키 리스너","about.dep_pyaudio":"오디오 녹음","about.dep_onnx":"ONNX 모델 추론","about.dep_numpy":"수치 계산","about.dep_librosa":"오디오 처리","about.dep_tokenizers":"텍스트 토큰화",
+    "about.dep_qtawesome":"Font Awesome 아이콘","about.dep_pynput":"글로벌 단축키 리스너","about.dep_sounddevice":"오디오 녹음","about.dep_onnx":"ONNX 모델 추론","about.dep_numpy":"수치 계산","about.dep_librosa":"오디오 처리","about.dep_tokenizers":"텍스트 토큰화",
 },
 "ru": {
     "app.title":"Распознавание речи",
@@ -223,7 +223,7 @@ UI = {
     "about.title":"О программе",
     "about.subtitle":"Инструмент распознавания речи Qwen3 ASR",
     "about.col_lib":"Библиотека","about.col_ver":"Версия","about.col_lic":"Лицензия","about.col_use":"Назначение",
-    "about.dep_qtawesome":"Иконки Font Awesome","about.dep_pynput":"Глобальный прослушиватель горячих клавиш","about.dep_pyaudio":"Запись аудио","about.dep_onnx":"Инференс ONNX-модели","about.dep_numpy":"Числовые вычисления","about.dep_librosa":"Обработка аудио","about.dep_tokenizers":"Токенизация текста",
+    "about.dep_qtawesome":"Иконки Font Awesome","about.dep_pynput":"Глобальный прослушиватель горячих клавиш","about.dep_sounddevice":"Запись аудио","about.dep_onnx":"Инференс ONNX-модели","about.dep_numpy":"Числовые вычисления","about.dep_librosa":"Обработка аудио","about.dep_tokenizers":"Токенизация текста",
 },
 "fr": {
     "app.title":"Reconnaissance vocale",
@@ -248,7 +248,7 @@ UI = {
     "about.title":"À propos",
     "about.subtitle":"Outil de reconnaissance vocale Qwen3 ASR",
     "about.col_lib":"Bibliothèque","about.col_ver":"Version","about.col_lic":"Licence","about.col_use":"Utilisation",
-    "about.dep_qtawesome":"Icônes Font Awesome","about.dep_pynput":"Écouteur de raccourcis globaux","about.dep_pyaudio":"Enregistrement audio","about.dep_onnx":"Inférence modèle ONNX","about.dep_numpy":"Calcul numérique","about.dep_librosa":"Traitement audio","about.dep_tokenizers":"Tokenisation de texte",
+    "about.dep_qtawesome":"Icônes Font Awesome","about.dep_pynput":"Écouteur de raccourcis globaux","about.dep_sounddevice":"Enregistrement audio","about.dep_onnx":"Inférence modèle ONNX","about.dep_numpy":"Calcul numérique","about.dep_librosa":"Traitement audio","about.dep_tokenizers":"Tokenisation de texte",
 },
 "pt": {
     "app.title":"Reconhecimento de fala",
@@ -273,7 +273,7 @@ UI = {
     "about.title":"Sobre",
     "about.subtitle":"Ferramenta de reconhecimento de fala Qwen3 ASR",
     "about.col_lib":"Biblioteca","about.col_ver":"Versão","about.col_lic":"Licença","about.col_use":"Finalidade",
-    "about.dep_qtawesome":"Ícones Font Awesome","about.dep_pynput":"Ouvinte de atalhos globais","about.dep_pyaudio":"Gravação de áudio","about.dep_onnx":"Inferência de modelo ONNX","about.dep_numpy":"Computação numérica","about.dep_librosa":"Processamento de áudio","about.dep_tokenizers":"Tokenização de texto",
+    "about.dep_qtawesome":"Ícones Font Awesome","about.dep_pynput":"Ouvinte de atalhos globais","about.dep_sounddevice":"Gravação de áudio","about.dep_onnx":"Inferência de modelo ONNX","about.dep_numpy":"Computação numérica","about.dep_librosa":"Processamento de áudio","about.dep_tokenizers":"Tokenização de texto",
 },
 "ar": {
     "app.title":"التعرف على الكلام",
@@ -298,7 +298,7 @@ UI = {
     "about.title":"حول",
     "about.subtitle":"أداة التعرف على الكلام Qwen3 ASR",
     "about.col_lib":"المكتبة","about.col_ver":"الإصدار","about.col_lic":"الرخصة","about.col_use":"الغرض",
-    "about.dep_qtawesome":"أيقونات Font Awesome","about.dep_pynput":"مستمع اختصارات عالمي","about.dep_pyaudio":"تسجيل صوتي","about.dep_onnx":"استدلال نموذج ONNX","about.dep_numpy":"حسابات رقمية","about.dep_librosa":"معالجة صوتية","about.dep_tokenizers":"تجزئة النص",
+    "about.dep_qtawesome":"أيقونات Font Awesome","about.dep_pynput":"مستمع اختصارات عالمي","about.dep_sounddevice":"تسجيل صوتي","about.dep_onnx":"استدلال نموذج ONNX","about.dep_numpy":"حسابات رقمية","about.dep_librosa":"معالجة صوتية","about.dep_tokenizers":"تجزئة النص",
 },
 "it": {
     "app.title":"Riconoscimento vocale",
@@ -323,7 +323,7 @@ UI = {
     "about.title":"Informazioni",
     "about.subtitle":"Strumento di riconoscimento vocale Qwen3 ASR",
     "about.col_lib":"Libreria","about.col_ver":"Versione","about.col_lic":"Licenza","about.col_use":"Scopo",
-    "about.dep_qtawesome":"Icone Font Awesome","about.dep_pynput":"Listener scorciatoie globali","about.dep_pyaudio":"Registrazione audio","about.dep_onnx":"Inferenza modello ONNX","about.dep_numpy":"Calcolo numerico","about.dep_librosa":"Elaborazione audio","about.dep_tokenizers":"Tokenizzazione testo",
+    "about.dep_qtawesome":"Icone Font Awesome","about.dep_pynput":"Listener scorciatoie globali","about.dep_sounddevice":"Registrazione audio","about.dep_onnx":"Inferenza modello ONNX","about.dep_numpy":"Calcolo numerico","about.dep_librosa":"Elaborazione audio","about.dep_tokenizers":"Tokenizzazione testo",
 },
 "es": {
     "app.title":"Reconocimiento de voz",
@@ -348,7 +348,7 @@ UI = {
     "about.title":"Acerca de",
     "about.subtitle":"Herramienta de reconocimiento de voz Qwen3 ASR",
     "about.col_lib":"Biblioteca","about.col_ver":"Versión","about.col_lic":"Licencia","about.col_use":"Propósito",
-    "about.dep_qtawesome":"Iconos Font Awesome","about.dep_pynput":"Escuchador de atajos globales","about.dep_pyaudio":"Grabación de audio","about.dep_onnx":"Inferencia de modelo ONNX","about.dep_numpy":"Cálculo numérico","about.dep_librosa":"Procesamiento de audio","about.dep_tokenizers":"Tokenización de texto",
+    "about.dep_qtawesome":"Iconos Font Awesome","about.dep_pynput":"Escuchador de atajos globales","about.dep_sounddevice":"Grabación de audio","about.dep_onnx":"Inferencia de modelo ONNX","about.dep_numpy":"Cálculo numérico","about.dep_librosa":"Procesamiento de audio","about.dep_tokenizers":"Tokenización de texto",
 },
 "hi": {
     "app.title":"वाक् पहचान",
@@ -373,7 +373,7 @@ UI = {
     "about.title":"बारे में",
     "about.subtitle":"Qwen3 ASR वाक् पहचान उपकरण",
     "about.col_lib":"लाइब्रेरी","about.col_ver":"संस्करण","about.col_lic":"लाइसेंस","about.col_use":"उद्देश्य",
-    "about.dep_qtawesome":"Font Awesome आइकन","about.dep_pynput":"ग्लोबल शॉर्टकट लिसनर","about.dep_pyaudio":"ऑडियो रिकॉर्डिंग","about.dep_onnx":"ONNX मॉडल इंफ़रेंस","about.dep_numpy":"संख्यात्मक गणना","about.dep_librosa":"ऑडियो प्रोसेसिंग","about.dep_tokenizers":"टेक्स्ट टोकनाइज़ेशन",
+    "about.dep_qtawesome":"Font Awesome आइकन","about.dep_pynput":"ग्लोबल शॉर्टकट लिसनर","about.dep_sounddevice":"ऑडियो रिकॉर्डिंग","about.dep_onnx":"ONNX मॉडल इंफ़रेंस","about.dep_numpy":"संख्यात्मक गणना","about.dep_librosa":"ऑडियो प्रोसेसिंग","about.dep_tokenizers":"टेक्स्ट टोकनाइज़ेशन",
 },
 "id": {
     "app.title":"Pengenalan Suara",
@@ -398,7 +398,7 @@ UI = {
     "about.title":"Tentang",
     "about.subtitle":"Alat Pengenalan Suara Qwen3 ASR",
     "about.col_lib":"Pustaka","about.col_ver":"Versi","about.col_lic":"Lisensi","about.col_use":"Kegunaan",
-    "about.dep_qtawesome":"Ikon Font Awesome","about.dep_pynput":"Pendengar pintasan global","about.dep_pyaudio":"Perekaman audio","about.dep_onnx":"Inferensi model ONNX","about.dep_numpy":"Komputasi numerik","about.dep_librosa":"Pemrosesan audio","about.dep_tokenizers":"Tokenisasi teks",
+    "about.dep_qtawesome":"Ikon Font Awesome","about.dep_pynput":"Pendengar pintasan global","about.dep_sounddevice":"Perekaman audio","about.dep_onnx":"Inferensi model ONNX","about.dep_numpy":"Komputasi numerik","about.dep_librosa":"Pemrosesan audio","about.dep_tokenizers":"Tokenisasi teks",
 },
 "th": {
     "app.title":"การรู้จำเสียง",
@@ -423,7 +423,7 @@ UI = {
     "about.title":"เกี่ยวกับ",
     "about.subtitle":"เครื่องมือรู้จำเสียง Qwen3 ASR",
     "about.col_lib":"ไลบรารี","about.col_ver":"เวอร์ชัน","about.col_lic":"สัญญาอนุญาต","about.col_use":"วัตถุประสงค์",
-    "about.dep_qtawesome":"ไอคอน Font Awesome","about.dep_pynput":"ตัวฟังทางลัดระดับโลก","about.dep_pyaudio":"การบันทึกเสียง","about.dep_onnx":"การอนุมานโมเดล ONNX","about.dep_numpy":"การคำนวณตัวเลข","about.dep_librosa":"การประมวลผลเสียง","about.dep_tokenizers":"การแยกคำ",
+    "about.dep_qtawesome":"ไอคอน Font Awesome","about.dep_pynput":"ตัวฟังทางลัดระดับโลก","about.dep_sounddevice":"การบันทึกเสียง","about.dep_onnx":"การอนุมานโมเดล ONNX","about.dep_numpy":"การคำนวณตัวเลข","about.dep_librosa":"การประมวลผลเสียง","about.dep_tokenizers":"การแยกคำ",
 },
 "tr": {
     "app.title":"Konuşma Tanıma",
@@ -448,7 +448,7 @@ UI = {
     "about.title":"Hakkında",
     "about.subtitle":"Qwen3 ASR Konuşma Tanıma Aracı",
     "about.col_lib":"Kütüphane","about.col_ver":"Sürüm","about.col_lic":"Lisans","about.col_use":"Amaç",
-    "about.dep_qtawesome":"Font Awesome ikonları","about.dep_pynput":"Genel kısayol dinleyici","about.dep_pyaudio":"Ses kaydı","about.dep_onnx":"ONNX model çıkarımı","about.dep_numpy":"Sayısal hesaplama","about.dep_librosa":"Ses işleme","about.dep_tokenizers":"Metin tokenize",
+    "about.dep_qtawesome":"Font Awesome ikonları","about.dep_pynput":"Genel kısayol dinleyici","about.dep_sounddevice":"Ses kaydı","about.dep_onnx":"ONNX model çıkarımı","about.dep_numpy":"Sayısal hesaplama","about.dep_librosa":"Ses işleme","about.dep_tokenizers":"Metin tokenize",
 },
 "uk": {
     "app.title":"Розпізнавання мовлення",
@@ -473,7 +473,7 @@ UI = {
     "about.title":"Про програму",
     "about.subtitle":"Інструмент розпізнавання мовлення Qwen3 ASR",
     "about.col_lib":"Бібліотека","about.col_ver":"Версія","about.col_lic":"Ліцензія","about.col_use":"Призначення",
-    "about.dep_qtawesome":"Іконки Font Awesome","about.dep_pynput":"Глобальний прослуховувач гарячих клавіш","about.dep_pyaudio":"Запис аудіо","about.dep_onnx":"Інференс ONNX-моделі","about.dep_numpy":"Числові обчислення","about.dep_librosa":"Обробка аудіо","about.dep_tokenizers":"Токенізація тексту",
+    "about.dep_qtawesome":"Іконки Font Awesome","about.dep_pynput":"Глобальний прослуховувач гарячих клавіш","about.dep_sounddevice":"Запис аудіо","about.dep_onnx":"Інференс ONNX-моделі","about.dep_numpy":"Числові обчислення","about.dep_librosa":"Обробка аудіо","about.dep_tokenizers":"Токенізація тексту",
 },
 "vi": {
     "app.title":"Nhận dạng giọng nói",
@@ -498,7 +498,7 @@ UI = {
     "about.title":"Giới thiệu",
     "about.subtitle":"Công cụ nhận dạng giọng nói Qwen3 ASR",
     "about.col_lib":"Thư viện","about.col_ver":"Phiên bản","about.col_lic":"Giấy phép","about.col_use":"Mục đích",
-    "about.dep_qtawesome":"Biểu tượng Font Awesome","about.dep_pynput":"Trình nghe phím tắt toàn cục","about.dep_pyaudio":"Ghi âm","about.dep_onnx":"Suy luận mô hình ONNX","about.dep_numpy":"Tính toán số","about.dep_librosa":"Xử lý âm thanh","about.dep_tokenizers":"Phân đoạn văn bản",
+    "about.dep_qtawesome":"Biểu tượng Font Awesome","about.dep_pynput":"Trình nghe phím tắt toàn cục","about.dep_sounddevice":"Ghi âm","about.dep_onnx":"Suy luận mô hình ONNX","about.dep_numpy":"Tính toán số","about.dep_librosa":"Xử lý âm thanh","about.dep_tokenizers":"Phân đoạn văn bản",
 },
 "cs": {
     "app.title":"Rozpoznávání řeči",
@@ -523,7 +523,7 @@ UI = {
     "about.title":"O aplikaci",
     "about.subtitle":"Nástroj pro rozpoznávání řeči Qwen3 ASR",
     "about.col_lib":"Knihovna","about.col_ver":"Verze","about.col_lic":"Licence","about.col_use":"Účel",
-    "about.dep_qtawesome":"Ikony Font Awesome","about.dep_pynput":"Globální posluchač zkratek","about.dep_pyaudio":"Nahrávání zvuku","about.dep_onnx":"Inference ONNX modelu","about.dep_numpy":"Numerické výpočty","about.dep_librosa":"Zpracování zvuku","about.dep_tokenizers":"Tokenizace textu",
+    "about.dep_qtawesome":"Ikony Font Awesome","about.dep_pynput":"Globální posluchač zkratek","about.dep_sounddevice":"Nahrávání zvuku","about.dep_onnx":"Inference ONNX modelu","about.dep_numpy":"Numerické výpočty","about.dep_librosa":"Zpracování zvuku","about.dep_tokenizers":"Tokenizace textu",
 },
 "da": {
     "app.title":"Talegenkendelse",
@@ -548,7 +548,7 @@ UI = {
     "about.title":"Om",
     "about.subtitle":"Qwen3 ASR Talegenkendelsesværktøj",
     "about.col_lib":"Bibliotek","about.col_ver":"Version","about.col_lic":"Licens","about.col_use":"Formål",
-    "about.dep_qtawesome":"Font Awesome ikoner","about.dep_pynput":"Global genvejslytter","about.dep_pyaudio":"Lydoptagelse","about.dep_onnx":"ONNX modelinferens","about.dep_numpy":"Numerisk beregning","about.dep_librosa":"Lydbehandling","about.dep_tokenizers":"Teksttokenisering",
+    "about.dep_qtawesome":"Font Awesome ikoner","about.dep_pynput":"Global genvejslytter","about.dep_sounddevice":"Lydoptagelse","about.dep_onnx":"ONNX modelinferens","about.dep_numpy":"Numerisk beregning","about.dep_librosa":"Lydbehandling","about.dep_tokenizers":"Teksttokenisering",
 },
 "fil": {
     "app.title":"Pagkilala sa Pagsasalita",
@@ -573,7 +573,7 @@ UI = {
     "about.title":"Tungkol sa",
     "about.subtitle":"Qwen3 ASR Kasangkapan sa Pagkilala sa Pagsasalita",
     "about.col_lib":"Library","about.col_ver":"Bersyon","about.col_lic":"Lisensya","about.col_use":"Layunin",
-    "about.dep_qtawesome":"Font Awesome icons","about.dep_pynput":"Global na tagapakinig ng shortcut","about.dep_pyaudio":"Pag-record ng audio","about.dep_onnx":"ONNX model inference","about.dep_numpy":"Numerikal na computing","about.dep_librosa":"Audio processing","about.dep_tokenizers":"Text tokenization",
+    "about.dep_qtawesome":"Font Awesome icons","about.dep_pynput":"Global na tagapakinig ng shortcut","about.dep_sounddevice":"Pag-record ng audio","about.dep_onnx":"ONNX model inference","about.dep_numpy":"Numerikal na computing","about.dep_librosa":"Audio processing","about.dep_tokenizers":"Text tokenization",
 },
 "fi": {
     "app.title":"Puheentunnistus",
@@ -598,7 +598,7 @@ UI = {
     "about.title":"Tietoja",
     "about.subtitle":"Qwen3 ASR puheentunnistyökalu",
     "about.col_lib":"Kirjasto","about.col_ver":"Versio","about.col_lic":"Lisenssi","about.col_use":"Käyttötarkoitus",
-    "about.dep_qtawesome":"Font Awesome -kuvakkeet","about.dep_pynput":"Globaali pikanäppäinkuuntelija","about.dep_pyaudio":"Äänitys","about.dep_onnx":"ONNX-mallipäättely","about.dep_numpy":"Numeerinen laskenta","about.dep_librosa":"Äänenkäsittely","about.dep_tokenizers":"Tekstin tokenisointi",
+    "about.dep_qtawesome":"Font Awesome -kuvakkeet","about.dep_pynput":"Globaali pikanäppäinkuuntelija","about.dep_sounddevice":"Äänitys","about.dep_onnx":"ONNX-mallipäättely","about.dep_numpy":"Numeerinen laskenta","about.dep_librosa":"Äänenkäsittely","about.dep_tokenizers":"Tekstin tokenisointi",
 },
 "is": {
     "app.title":"Talgreining",
@@ -623,7 +623,7 @@ UI = {
     "about.title":"Um",
     "about.subtitle":"Qwen3 ASR talgreiningartæki",
     "about.col_lib":"Safn","about.col_ver":"Útgáfa","about.col_lic":"Leyfi","about.col_use":"Tilgangur",
-    "about.dep_qtawesome":"Font Awesome tákn","about.dep_pynput":"Hlustun flýtileiða","about.dep_pyaudio":"Hljóðupptaka","about.dep_onnx":"ONNX módel ályktun","about.dep_numpy":"Töluleg útreikningur","about.dep_librosa":"Hljóðvinnsla","about.dep_tokenizers":"Texta einkunnagjöf",
+    "about.dep_qtawesome":"Font Awesome tákn","about.dep_pynput":"Hlustun flýtileiða","about.dep_sounddevice":"Hljóðupptaka","about.dep_onnx":"ONNX módel ályktun","about.dep_numpy":"Töluleg útreikningur","about.dep_librosa":"Hljóðvinnsla","about.dep_tokenizers":"Texta einkunnagjöf",
 },
 "ms": {
     "app.title":"Pengecaman Suara",
@@ -648,7 +648,7 @@ UI = {
     "about.title":"Tentang",
     "about.subtitle":"Alat Pengecaman Suara Qwen3 ASR",
     "about.col_lib":"Pustaka","about.col_ver":"Versi","about.col_lic":"Lesen","about.col_use":"Tujuan",
-    "about.dep_qtawesome":"Ikon Font Awesome","about.dep_pynput":"Pendengar pintasan global","about.dep_pyaudio":"Rakaman audio","about.dep_onnx":"Inferens model ONNX","about.dep_numpy":"Pengiraan berangka","about.dep_librosa":"Pemprosesan audio","about.dep_tokenizers":"Pengtokenan teks",
+    "about.dep_qtawesome":"Ikon Font Awesome","about.dep_pynput":"Pendengar pintasan global","about.dep_sounddevice":"Rakaman audio","about.dep_onnx":"Inferens model ONNX","about.dep_numpy":"Pengiraan berangka","about.dep_librosa":"Pemprosesan audio","about.dep_tokenizers":"Pengtokenan teks",
 },
 "no": {
     "app.title":"Talegjenkjenning",
@@ -673,7 +673,7 @@ UI = {
     "about.title":"Om",
     "about.subtitle":"Qwen3 ASR talegjenkjenningsverktøy",
     "about.col_lib":"Bibliotek","about.col_ver":"Versjon","about.col_lic":"Lisens","about.col_use":"Formål",
-    "about.dep_qtawesome":"Font Awesome-ikoner","about.dep_pynput":"Global snarveilytter","about.dep_pyaudio":"Lydopptak","about.dep_onnx":"ONNX modellinferens","about.dep_numpy":"Numerisk beregning","about.dep_librosa":"Lydbearbeiding","about.dep_tokenizers":"Teksttokenisering",
+    "about.dep_qtawesome":"Font Awesome-ikoner","about.dep_pynput":"Global snarveilytter","about.dep_sounddevice":"Lydopptak","about.dep_onnx":"ONNX modellinferens","about.dep_numpy":"Numerisk beregning","about.dep_librosa":"Lydbearbeiding","about.dep_tokenizers":"Teksttokenisering",
 },
 "pl": {
     "app.title":"Rozpoznawanie mowy",
@@ -698,7 +698,7 @@ UI = {
     "about.title":"O programie",
     "about.subtitle":"Narzędzie do rozpoznawania mowy Qwen3 ASR",
     "about.col_lib":"Biblioteka","about.col_ver":"Wersja","about.col_lic":"Licencja","about.col_use":"Przeznaczenie",
-    "about.dep_qtawesome":"Ikony Font Awesome","about.dep_pynput":"Globalny nasłuch skrótów","about.dep_pyaudio":"Nagrywanie dźwięku","about.dep_onnx":"Inferencja modelu ONNX","about.dep_numpy":"Obliczenia numeryczne","about.dep_librosa":"Przetwarzanie dźwięku","about.dep_tokenizers":"Tokenizacja tekstu",
+    "about.dep_qtawesome":"Ikony Font Awesome","about.dep_pynput":"Globalny nasłuch skrótów","about.dep_sounddevice":"Nagrywanie dźwięku","about.dep_onnx":"Inferencja modelu ONNX","about.dep_numpy":"Obliczenia numeryczne","about.dep_librosa":"Przetwarzanie dźwięku","about.dep_tokenizers":"Tokenizacja tekstu",
 },
 "sv": {
     "app.title":"Taligenkänning",
@@ -723,7 +723,7 @@ UI = {
     "about.title":"Om",
     "about.subtitle":"Qwen3 ASR taligenkänningsverktyg",
     "about.col_lib":"Bibliotek","about.col_ver":"Version","about.col_lic":"Licens","about.col_use":"Syfte",
-    "about.dep_qtawesome":"Font Awesome-ikoner","about.dep_pynput":"Global genvägslyssnare","about.dep_pyaudio":"Ljudinspelning","about.dep_onnx":"ONNX modellinferens","about.dep_numpy":"Numerisk beräkning","about.dep_librosa":"Ljudbehandling","about.dep_tokenizers":"Texttokenisering",
+    "about.dep_qtawesome":"Font Awesome-ikoner","about.dep_pynput":"Global genvägslyssnare","about.dep_sounddevice":"Ljudinspelning","about.dep_onnx":"ONNX modellinferens","about.dep_numpy":"Numerisk beräkning","about.dep_librosa":"Ljudbehandling","about.dep_tokenizers":"Texttokenisering",
 },
 }
 
