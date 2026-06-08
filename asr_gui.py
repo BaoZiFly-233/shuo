@@ -285,6 +285,23 @@ class SettingsDialog(QDialog):
         self.opacity_pct.setStyleSheet(f"color:{t['text']};"); self.opacity_pct.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         opacity_row.addWidget(self.opacity_pct)
         layout.addLayout(opacity_row)
+
+        # ── 分隔线 ──
+        sep3 = QWidget(); sep3.setFixedHeight(1); sep3.setStyleSheet(f"background:{t['border']};")
+        layout.addWidget(sep3)
+
+        # ── 桌面快捷方式 ──
+        shortcut_btn = QPushButton("Create Desktop Shortcut")
+        shortcut_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        shortcut_btn.clicked.connect(self._create_shortcut)
+        layout.addWidget(shortcut_btn)
+
+        # ── 开机自启 ──
+        self.autostart_cb = QCheckBox("Start with Windows")
+        self.autostart_cb.setChecked(self._get_autostart())
+        self.autostart_cb.stateChanged.connect(self._on_autostart_changed)
+        layout.addWidget(self.autostart_cb)
+
         layout.addStretch()
         btn_row = QHBoxLayout(); btn_row.addStretch()
         cancel_btn = QPushButton(i18n.tr("btn.cancel")); cancel_btn.setFixedWidth(90)
@@ -306,6 +323,71 @@ class SettingsDialog(QDialog):
         if path: self.bg_edit.setText(str(Path(path)))
     def _clear_bg(self): self.bg_edit.clear()
     def _on_opacity_changed(self, val): self.opacity_pct.setText(f"{val}%")
+
+    @staticmethod
+    def _get_exe_path():
+        """Return path to the executable (frozen or source)."""
+        if getattr(sys, 'frozen', False):
+            return Path(sys.executable)
+        return Path(sys.argv[0]).resolve()
+
+    @staticmethod
+    def _create_shortcut():
+        """Create desktop shortcut to the app via PowerShell."""
+        import subprocess
+        exe = SettingsDialog._get_exe_path()
+        desktop = Path.home() / "Desktop"
+        lnk = desktop / "Shuo.lnk"
+        try:
+            ps = f'''
+                $WshShell = New-Object -ComObject WScript.Shell
+                $Shortcut = $WshShell.CreateShortcut("{lnk}")
+                $Shortcut.TargetPath = "{exe}"
+                $Shortcut.WorkingDirectory = "{exe.parent}"
+                $Shortcut.IconLocation = "{exe}"
+                $Shortcut.Save()
+            '''
+            subprocess.run(["powershell", "-NoProfile", "-Command", ps],
+                           capture_output=True, check=True)
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.information(None, "Shuo", f"Desktop shortcut created:\n{lnk}")
+        except Exception as e:
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(None, "Shuo", f"Failed to create shortcut:\n{e}")
+
+    @staticmethod
+    def _get_autostart():
+        """Check if app is configured to start with Windows."""
+        try:
+            import winreg
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Run",
+                0, winreg.KEY_READ)
+            val, _ = winreg.QueryValueEx(key, "Shuo")
+            winreg.CloseKey(key)
+            return True
+        except Exception:
+            return False
+
+    @staticmethod
+    def _on_autostart_changed(state):
+        """Enable/disable auto-start with Windows."""
+        import winreg
+        exe = SettingsDialog._get_exe_path()
+        try:
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Run",
+                0, winreg.KEY_SET_VALUE)
+            if state == Qt.CheckState.Checked.value:
+                winreg.SetValueEx(key, "Shuo", 0, winreg.REG_SZ, str(exe))
+            else:
+                try:
+                    winreg.DeleteValue(key, "Shuo")
+                except Exception:
+                    pass
+            winreg.CloseKey(key)
+        except Exception as e:
+            logger.warning(f"Failed to set auto-start: {e}")
     def _save(self):
         self.config["hotkey"] = self._temp_hotkey
         self.config["bg_image"] = self.bg_edit.text()
